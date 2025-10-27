@@ -23,6 +23,7 @@ go.work
 .helmwave
 .vscode
 .idea
+.venv
 
 mpi-operator/logs
 mon/vmstack/charts/victoria-metrics-k8s-stack
