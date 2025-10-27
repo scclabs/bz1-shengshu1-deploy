@@ -1,0 +1,15 @@
+version: "0.41.0"
+
+repositories:
+  - name: nvidia
+    url: https://helm.ngc.nvidia.com/nvidia
+
+releases:
+  - name: "gpu-operator"
+    namespace: "gpu-operator"
+    create_namespace: true
+    chart:
+      name: nvidia/gpu-operator
+      version: v25.3.0
+    values:
+      - values.yml

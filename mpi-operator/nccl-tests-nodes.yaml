@@ -1,0 +1,132 @@
+apiVersion: kubeflow.org/v2beta1
+kind: MPIJob
+metadata:
+  name: nccl-tests-nodes-g2
+spec:
+  slotsPerWorker: 8
+  launcherCreationPolicy: WaitForWorkersReady
+  runPolicy:
+    cleanPodPolicy: Running
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - zw11m4gn0601
+          containers:
+            - image: cr.zw11.paratera.com/tests/nccl-tests:cuda12.8.1-ubuntu22.04-nccl2.26.5
+              imagePullPolicy: Always
+              name: nccl
+              env:
+                - name: OMPI_ALLOW_RUN_AS_ROOT
+                  value: "1"
+                - name: OMPI_ALLOW_RUN_AS_ROOT_CONFIRM
+                  value: "1"
+              # command: ["sleep", "infinity"]
+              command: ["/bin/bash", "-c"]
+              args: [
+                  "mpirun \
+                  -np 120 \
+                  -bind-to none \
+                  -x LD_LIBRARY_PATH \
+                  -x NCCL_SOCKET_IFNAME=eth0 \
+                  -x NCCL_IB_DISABLE=0 \ 
+                  -x NCCL_IB_HCA=mlx5_2 \
+                  -x NCCL_ALGO=Ring \
+                  -x NCCL_IB_QPS_PER_CONNECTION=4 \
+                  /opt/nccl_tests/build/all_reduce_perf -b 8 -e 8g -f 2 -g 1 \
+                  ",
+                ]
+                  # -x NCCL_DEBUG=INFO \
+                  # -x NCCL_DEBUG_SUBSYS=ALL \
+                  # -x NCCL_LAUNCH_MODE=GROUP \
+              resources:
+                requests:
+                  cpu: 2
+                  memory: 128Mi
+          tolerations:
+            - operator: Exists
+              effect: NoSchedule
+          enableServiceLinks: false
+          automountServiceAccountToken: false
+    Worker:
+      replicas: 15
+      template:
+        metadata:
+          labels:
+            job: nccl-test
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      # - zw11m4gl1501 # g1
+                      # - zw11m4gn0601 # g1
+                      # - zw11m4gn0901 # g1
+                      # - zw11m4gl2001 # g1
+                      # - zw11m4gl2301 # g1
+                      # - zw11m4gn0301 # g1
+                      # - zw11m4gn0501 # g1
+                      # - zw11m4gn1401 # g1
+                      # - zw11m4gn1501 # g1
+                      # - zw11m4gn1801 # g1
+                      # - zw11m4gn2001 # g1
+                      # - zw11m4gp1401 # g1
+                      # - zw11m4gp2001 # g1
+                      # - zw11m4gp2101 # g1
+
+                      - zw11m4gn0201 # g2
+                      - zw11m4gl1601 # g2
+                      - zw11m4gl1701 # g2
+                      - zw11m4gl2101 # g2
+                      - zw11m4gn0801 # g2
+                      - zw11m4gn1001 # g2
+                      - zw11m4gl2501 # g2
+                      - zw11m4gn0401 # g2
+                      - zw11m4gn0701 # g2
+                      - zw11m4gn1201 # g2
+                      - zw11m4gn1301 # g2
+                      - zw11m4gn1601 # g2
+                      - zw11m4gn1901 # g2
+                      - zw11m4gp1301 # g2
+                      - zw11m4gp2201 # g2
+                      # - zw11m4gn1701 # node error
+          containers:
+            - image: cr.zw11.paratera.com/tests/nccl-tests:cuda12.8.1-ubuntu22.04-nccl2.26.5
+              imagePullPolicy: Always
+              name: nccl
+              resources:
+                limits:
+                  cpu: 80
+                  memory: 100Gi
+                  nvidia.com/gpu: 8
+                  rdma/hca: 1
+              volumeMounts:
+                - mountPath: /dev/shm
+                  name: dshm
+              securityContext:
+                capabilities: 
+                  add: 
+                    - IPC_LOCK
+                    - SYS_RESOURCE
+          volumes:
+            - emptyDir:
+                medium: Memory
+              name: dshm
+          tolerations:
+            - operator: Exists
+              effect: NoSchedule
+          enableServiceLinks: false
+          automountServiceAccountToken: false

@@ -1,0 +1,12 @@
+registries:
+- host: mir.blsc.cn
+
+releases:
+  - name: metallb
+    namespace: metallb-system
+    create_namespace: true
+    chart:
+      name: oci://mir.blsc.cn/ghcr.io/wutz/charts/metallb
+      version: 0.15.2
+    values:
+      - values.yml

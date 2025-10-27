@@ -1,0 +1,17 @@
+[Unit]
+After=network.target nss-lookup.target
+
+[Service]
+User=root
+WorkingDirectory=/opt/paratera/coredns
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+ExecStart=/opt/paratera/coredns/bin/coredns -conf /opt/paratera/coredns/conf/Corefile
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+LimitNPROC=512
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target

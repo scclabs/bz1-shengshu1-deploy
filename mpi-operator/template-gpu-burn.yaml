@@ -1,0 +1,63 @@
+apiVersion: kubeflow.org/v2beta1
+kind: MPIJob
+metadata:
+  name: gpu-burn-gn001
+spec:
+  slotsPerWorker: 8
+  runLauncherAsWorker: true
+  runPolicy:
+    cleanPodPolicy: Running
+  mpiReplicaSpecs:
+    Launcher:
+      restartPolicy: OnFailure
+      replicas: 1
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - gn001
+          containers:
+          - name: gpu-burn
+            image: cr.hs1h-int.paratera.com/tests/gpu_burn:v0.0.1
+            imagePullPolicy: IfNotPresent
+            command:
+              - "/bin/bash"
+              - "-c"
+            args: 
+              - ./gpu_burn -tc 600
+            resources:
+              limits:
+                cpu: "80"
+                memory: "480Gi"
+                nvidia.com/gpu: "8"
+          tolerations:
+            - operator: Exists
+              effect: NoSchedule
+    Worker:
+      restartPolicy: OnFailure
+      replicas: 1
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - gn001
+          containers:
+          - name: gpu-burn
+            image: cr.hs1h-int.paratera.com/tests/gpu_burn:v0.0.1
+            imagePullPolicy: IfNotPresent
+            command: ["sleep", "infinity"]
+          tolerations:
+            - operator: Exists
+              effect: NoSchedule

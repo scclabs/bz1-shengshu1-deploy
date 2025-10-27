@@ -1,0 +1,16 @@
+spegel:
+  prependExisting: true
+  mirroredRegistries:
+  - https://docker.io
+  - https://gcr.io
+  - https://ghcr.io
+  - https://k8s.gcr.io
+  - https://registry.k8s.io
+  - https://nvcr.io
+  - https://quay.io
+  - https://cr.zw1.paratera.com
+  - https://cr.zw1u.paratera.com
+  - https://mir.blsc.cn
+  - https://cr.shengshu1.bz1.paratera.com
+  ## uncomment to use private registry
+  # - https://cr.example.com

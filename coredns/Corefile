@@ -1,0 +1,26 @@
+.:53 {
+    hosts {
+        10.63.128.6 bj.bcebos.com s3.bj.bcebos.com
+        10.136.0.15 sip-image-1323254114.cos.ap-guangzhou.myqcloud.com ss-tmp-1323254114.cos.ap-guangzhou.myqcloud.com
+        fallthrough
+    }
+
+    # 将 .shu.team 域名转发到 10.63.128.4
+    forward shu.team 10.63.128.4
+
+    # 其它所有域名转发到 223.5.5.5 119.29.29.29
+    forward . 223.5.5.5 119.29.29.29
+
+    # 启用日志记录
+    log
+
+    # 启用错误记录
+    errors
+
+    # 启用健康检查
+    health :8081
+
+    # 缓存设置
+    cache 30
+}
+

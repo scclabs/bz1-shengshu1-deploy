@@ -1,0 +1,37 @@
+controller:
+  replicaCount: 3
+  ingressClassResource:
+    default: true
+  service:
+    annotations:
+      metallb.universe.tf/address-pool: default
+      # [需要修改] 指定 Service Load Balancer 的 IP, 防止意外重建时 IP 变化
+      # 一般选择 metallb ipAddressPools 中地址池倒数第二个地址
+      metallb.universe.tf/loadBalancerIPs: "10.196.255.1"
+    # ports:
+    #   http: 8080
+    #   https: 7443
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+  admissionWebhooks:
+    patch:
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+  extraArgs:
+    # default-ssl-certificate: cert-manager/default-tls
+    enable-ssl-passthrough: true
+  config:
+    large-client-header-buffers: "4 32k"
+    client-header-buffer-size: "16k"
+    allow-snippet-annotations: "true"
+    proxy-stream-next-upstream-timeout: "3600"
+    proxy-stream-timeout: "3600"
