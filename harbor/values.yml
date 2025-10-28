@@ -1,0 +1,223 @@
+expose:
+  type: ingress
+  tls:
+    # Enable TLS or not.
+    # Delete the "ssl-redirect" annotations in "expose.ingress.annotations" when TLS is disabled and "expose.type" is "ingress"
+    # Note: if the "expose.type" is "ingress" and TLS is disabled,
+    # the port must be included in the command when pulling/pushing images.
+    # Refer to https://github.com/goharbor/harbor/issues/5291 for details.
+    enabled: true
+    # The source of the tls certificate. Set as "auto", "secret"
+    # or "none" and fill the information in the corresponding section
+    # 1) auto: generate the tls certificate automatically
+    # 2) secret: read the tls certificate from the specified secret.
+    # The tls certificate can be generated manually or by cert manager
+    # 3) none: configure no tls certificate for the ingress. If the default
+    # tls certificate is configured in the ingress controller, choose this option
+    certSource: secret
+    secret:
+      secretName: "harbor-ingress-tls"
+  ingress:
+    hosts:
+      core: cr.shengshu1.bz1.paratera.com
+      annotations:
+        # note different ingress controllers may require a different ssl-redirect annotation
+        # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
+        ingress.kubernetes.io/ssl-redirect: "true"
+        ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: "128k"
+
+# The external URL for Harbor core service. It is used to
+# 1) populate the docker/helm commands showed on portal
+# 2) populate the token service URL returned to docker client
+#
+# Format: protocol://domain[:port]. Usually:
+# 1) if "expose.type" is "ingress", the "domain" should be
+# the value of "expose.ingress.hosts.core"
+# 2) if "expose.type" is "clusterIP", the "domain" should be
+# the value of "expose.clusterIP.name"
+# 3) if "expose.type" is "nodePort", the "domain" should be
+# the IP address of k8s node
+#
+# If Harbor is deployed behind the proxy, set it as the URL of proxy
+externalURL: "https://cr.shengshu1.bz1.paratera.com"
+
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      storageClass: "shared-juice"
+      accessMode: ReadWriteOnce
+      size: 10Ti
+    jobservice:
+      jobLog:
+        storageClass: "shared-juice"
+        accessMode: ReadWriteOnce
+        size: 100Gi
+    # If external database is used, the following settings for database will
+    # be ignored
+    database:
+      storageClass: "sshared-juice"
+      accessMode: ReadWriteOnce
+      size: 100Gi
+    # If external Redis is used, the following settings for Redis will
+    # be ignored
+    redis:
+      storageClass: "shared-juice"
+      accessMode: ReadWriteOnce
+      size: 100Gi
+database:
+  # if external database is used, set "type" to "external"
+  # and fill the connection information in "external" section
+  type: external
+  internal:
+    # The initial superuser password for internal database
+    password: "changeit"
+    tolerations:
+      - operator: "Exists"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "node-role.kubernetes.io/control-plane"
+                  operator: "Exists"
+  external:
+    host: "pgm-11t11928rhwu3f5e.rds1.bz1.paratera.com"
+    port: "5432"
+    username: "postgres"
+    password: "q5v2ztds"
+    coreDatabase: "registry"
+redis:
+  # if external Redis is used, set "type" to "external"
+  # and fill the connection information in "external" section
+  type: external
+  internal:
+    tolerations:
+      - operator: "Exists"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "node-role.kubernetes.io/control-plane"
+                  operator: "Exists"
+  external:
+    # support redis, redis+sentinel
+    # addr for redis: <host_redis>:<port_redis>
+    # addr for redis+sentinel: <host_sentinel1>:<port_sentinel1>,<host_sentinel2>:<port_sentinel2>,<host_sentinel3>:<port_sentinel3>
+    addr: "r-urpu9kus35x21w11.rds1.bz1.paratera.com:6379"
+    # username field can be an empty string, and it will be authenticated against the default user
+    username: "default"
+    password: "Xr2dCY0138"
+
+# The initial password of Harbor admin. Change it from portal after launching Harbor
+# or give an existing secret for it
+# key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
+# existingSecretAdminPassword:
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+harborAdminPassword: "SU3lzhwY5cH9CEnV"
+
+# The proxy settings for updating trivy vulnerabilities from the Internet and replicating
+# artifacts from/to the registries that cannot be reached directly
+# proxy:
+#   httpProxy: "http://172.16.21.11:3128"
+#   httpsProxy: "http://172.16.21.11:3128"
+#   noProxy: "127.0.0.1/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10,localhost,*.paracloud.com,*.paratera.com,*.blsc.cn"
+#   components:
+#     - core
+#     - jobservice
+#     - trivy
+
+portal:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 64m
+    limits:
+      memory: 256Mi
+  tolerations:
+    - operator: "Exists"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
+
+core:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 64m
+    limits:
+      memory: 256Mi
+  tolerations:
+    - operator: "Exists"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
+
+jobservice:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 64m
+    limits:
+      memory: 256Mi
+  tolerations:
+    - operator: "Exists"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
+
+registry:
+  replicas: 3
+  resources:
+    requests:
+      cpu: 64m
+    limits:
+      memory: 256Mi
+  tolerations:
+    - operator: "Exists"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
+
+trivy:
+  enabled: false
+
+exporter:
+  tolerations:
+    - operator: "Exists"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
