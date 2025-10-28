@@ -1,0 +1,20 @@
+controller:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+
+node:
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+
+dashboard:
+  enabled: false

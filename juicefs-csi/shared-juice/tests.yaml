@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-juice
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      # 从 StorageClass 中申请 1TiB 存储容量
+      storage: 1Gi
+  storageClassName: shared-juice
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shared-juicefs-app
+spec:
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+  containers:
+    - args:
+        - -c
+        - while true; do echo $(date -u) >> /data/out.txt; sleep 5; done
+      command:
+        - /bin/sh
+      image: ubuntu:22.04
+      name: app
+      volumeMounts:
+        - mountPath: /data
+          name: juicefs-pv-hdd
+  volumes:
+    - name: juicefs-pv-hdd
+      persistentVolumeClaim:
+        claimName: shared-juice

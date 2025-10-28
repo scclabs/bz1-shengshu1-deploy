@@ -1,0 +1,17 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: shared-juice
+provisioner: csi.juicefs.com
+parameters:
+  csi.storage.k8s.io/provisioner-secret-name: shared-juice-secret
+  csi.storage.k8s.io/provisioner-secret-namespace: juicefs-csi
+  csi.storage.k8s.io/node-publish-secret-name: shared-juice-secret
+  csi.storage.k8s.io/node-publish-secret-namespace: juicefs-csi
+  csi.storage.k8s.io/controller-expand-secret-name: shared-juice-secret
+  csi.storage.k8s.io/controller-expand-secret-namespace: juicefs-csi
+  pathPattern: "${.pvc.namespace}-${.pvc.name}"
+mountOptions:
+  - cache-size=0
+reclaimPolicy: Delete
+allowVolumeExpansion: true
