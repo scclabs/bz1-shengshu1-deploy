@@ -8,7 +8,7 @@ spec:
   resources:
     requests:
       # 从 StorageClass 中申请 1TiB 存储容量
-      storage: 1Gi
+      storage: 1Ti
   storageClassName: shared-juice
 ---
 apiVersion: v1
