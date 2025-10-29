@@ -1,0 +1,31 @@
+# HELP special_attention_bus_id special attention node list 
+# TYPE special_attention_bus_id gauge
+special_attention_bus_id{Hostname="gn-10-195-1-227",pci_bus_id="00000000:56:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-252",pci_bus_id="00000000:56:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-237",pci_bus_id="00000000:98:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-248",pci_bus_id="00000000:98:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-2-80",pci_bus_id="00000000:49:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:16:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:36:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:46:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:56:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:98:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:B8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:C8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-213",pci_bus_id="00000000:D8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:16:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:36:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:46:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:56:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:98:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:B8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:C8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-219",pci_bus_id="00000000:D8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:16:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:36:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:46:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:56:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:98:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:B8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:C8:00.0"} 1
+special_attention_bus_id{Hostname="gn-10-195-1-211",pci_bus_id="00000000:D8:00.0"} 1

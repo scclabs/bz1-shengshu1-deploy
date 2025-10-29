@@ -1,0 +1,41 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-ssl-test.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-ssl-test.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-ssl-test
+      expr  : "1"
+
+    # # 报警：SSL证书即将过期
+    # - alert: discoverd_custom_alert
+    #   expr: (probe_ssl_earliest_cert_expiry{instance="https://pypi.hs1.paratera.com"} - time()) / 86400 < 365
+    #   for : 2m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - SSL证书即将过期
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**URL**: {{ $labels.instance }} | **有效期剩余**: <font color='red'>{{ printf \"%.2f\" $value }}d</font>"
+
+    # - alert: discoverd_custom_alert
+    #   expr: (x509_cert_not_after{subject_CN=~".*.hs1.paratera.com"} - time()) / 86400 < 365
+    #   for : 2m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - SSL证书即将过期
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**URL**: {{ $labels.subject_CN }} | **Secret**: {{ $labels.secret_namespace }}.{{ $labels.secret_name }} | **有效期剩余**: <font color='red'>{{ printf \"%.2f\" $value }}d</font>"
+

@@ -1,0 +1,13 @@
+cancel_jobs_by_comment:
+  mysql         : placeholder-mysql
+  prometheus    : qos_cn
+  todo_table    : cancel_by_comment_jobs_todo
+  history_table : cancel_by_comment_jobs_history
+  token         : i3idjehas7467akhasg164kj455jlz
+  circuit_breaker : 10
+  cancel_job_url : http://svc.qos.stg.paratera.com:8080
+  cancel_job_token : b643a024cfbc082ece5af419b47b4e1b
+  
+
+  callback      : ''
+  token_get     : ''

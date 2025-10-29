@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-exporter-prom-scrape
+  namespace: mon
+spec:
+  replicas: 2
+  template:
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: node-exporter
+          image: registry.cn-beijing.aliyuncs.com/prtr/node_exporter:1.9.1-1
+          imagePullPolicy: IfNotPresent
+          args:
+            - --web.listen-address=:9100
+            - --web.disable-exporter-metrics 
+            - --collector.disable-defaults
+            - --collector.textfile
+            - --collector.textfile.directory=/var/lib/node-exporter/textfile
+          ports:
+            - name: metrics
+              containerPort: 9100
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: metrics
+          livenessProbe:
+            httpGet:
+              path: /
+              port: metrics
+          volumeMounts:
+            - name: textfile
+              mountPath: /var/lib/node-exporter/textfile
+      imagePullSecrets:        
+        - name: aliyun-yht-private
+      nodeSelector:
+        kubernetes.io/os: linux
+        node-role.kubernetes.io/control-plane: "true"
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+      volumes:
+        - name: textfile
+          configMap: 
+            name: node-exporter-prom-metrics
+

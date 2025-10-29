@@ -1,0 +1,36 @@
+project: "alert"
+version: "0.35.2"
+
+.options: &options
+  # if set, upgrade process rolls back changes made in case of failed upgrade. 
+  atomic: true
+  # the wait will be set automatically if atomic is true
+  wait: true
+  # time to wait for any individual Kubernetes operation .
+  timeout: 300s
+  # limit the maximum number of revisions saved per release.
+  max_history: 3
+  # create the release namespace if not present.
+  namespace: mon
+  create_namespace: true
+  pending_release_strategy: rollback
+
+releases:
+- name: al-adaptor
+  tags: [adaptor]
+  <<: *options
+  chart:
+    name: ./charts/qos-alert-adaptor
+  values:
+  - ./values/_adaptor.yml
+  - ./values/_adaptor_cfg.yml
+  - ./values/_adaptor_cfg_op.yml
+
+- name: al-rules
+  tags: [rules]
+  <<: *options
+  chart:
+    name: ./charts/rules
+
+
+

@@ -1,0 +1,68 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mon
+
+commonLabels:
+  app: alert
+  app.kubernetes.io/name: alert
+
+resources:
+# 如需删除相关报警：
+# 1. 先注释或删除相关规则，以免下次提交时重新生成
+# 2. 在 k8s 中删除 相关 VMRule，然后等待 alert 生效，有时候需要手动进容器执行 kill -1 1 生效
+
+# records
+- vmalert/custom-rules/general.record.yaml
+- vmalert/custom-rules/ib.record.yaml
+- vmalert/custom-rules/eth.record.yaml
+- vmalert/custom-rules/gpu.record.yaml
+
+# 测试用
+- vmalert/custom-rules/eth.alert.test.yaml
+- vmalert/custom-rules/gpu.alert.test.yaml
+- vmalert/custom-rules/gpu_man.alert.test.yaml
+- vmalert/custom-rules/ib.alert.test.yaml
+- vmalert/custom-rules/node.alert.test.yaml
+- vmalert/custom-rules/k8s.alert.test.yaml
+- vmalert/custom-rules/ssl.alert.test.yaml
+
+# 生产
+- vmalert/custom-rules/eth.alert.yaml
+- vmalert/custom-rules/gpu.alert.yaml
+- vmalert/custom-rules/gpu_man.alert.yaml
+- vmalert/custom-rules/ib.alert.yaml
+- vmalert/custom-rules/node.alert.yaml
+- vmalert/custom-rules/k8s.alert.yaml
+- vmalert/custom-rules/mtail.alert.yaml
+- vmalert/custom-rules/ssl.alert.yaml
+
+# receiver 配置
+- vmalertmanager/receiver-fs-ids-test.yaml
+- vmalertmanager/receiver-fs-qh3-alert.yaml
+- vmalertmanager/receiver-fs-qh3-alert-ext.yaml
+- vmalertmanager/receiver-qywx-qh3-4090-5090-rsc-mt-ids-alert.yaml
+
+# # qos-alert-adaptor 提供飞书告警渠道
+# - qos-alert-adaptor/account.yaml
+# - qos-alert-adaptor/roles-node-manager.yaml
+# - qos-alert-adaptor/deployment.yaml
+# - qos-alert-adaptor/storage.yaml
+# - qos-alert-adaptor/service.yaml
+
+# # qos-collector-exporter 提供 ib 采集器
+# - qos-collector-exporter/deployment.yaml
+# - qos-collector-exporter/storage.yaml
+
+# configMapGenerator:
+# - name: vm-qos-alert-adaptor
+#   files:
+#   - qos-alert-adaptor/conf/config.yml
+#   - qos-alert-adaptor/conf/operators.yml
+
+# - name: vm-qos-collector-exporter
+#   files:
+#   - qos-collector-exporter/conf/config.yml
+
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,17 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-gpu-record
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-gpu-record
+
+    rules:
+
+    # 归一化
+    - record: re:DCGM_FI_DEV_XID_ERRORS
+      expr  : avg by (Hostname,device,gpu,pci_bus_id,err_msg) (DCGM_FI_DEV_XID_ERRORS)

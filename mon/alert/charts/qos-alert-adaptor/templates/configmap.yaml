@@ -1,0 +1,13 @@
+{{- if .Values.config.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "qos-alert-adaptor.fullname" . }}-cfg
+  labels:
+    {{- include "qos-alert-adaptor.labels" . | nindent 4 }}
+data:
+  {{- range $fileName, $fileContent := .Values.configFiles }}
+  {{ $fileName }}: |
+    {{- toYaml $fileContent | nindent 4}}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,42 @@
+
+.options: &options
+  # if set, upgrade process rolls back changes made in case of failed upgrade. 
+  atomic: false
+  # the wait will be set automatically if atomic is true
+  wait: false
+  # time to wait for any individual Kubernetes operation .
+  timeout: 180s
+  # limit the maximum number of revisions saved per release.
+  max_history: 3
+  # create the release namespace if not present.
+  namespace: mon
+  create_namespace: true
+  pending_release_strategy: rollback
+
+releases:
+- name: loki
+  tags: [loki]
+  <<: *options
+  chart:
+    name: ./charts/loki-6.30.1.tgz
+  values:
+  - ./values/_loki.yml
+  - ./values/loki.yml
+
+- name: promtail
+  tags: [promtail]
+  <<: *options
+  chart:
+    name: ./charts/promtail-6.17.0.tgz
+  values:
+  - ./values/_promtail.yml     # 默认配置会自动写入到 loki
+
+- name: event
+  tags: [event]
+  <<: *options
+  chart:
+    name: ./charts/kubernetes-event-exporter-3.5.3.tgz
+  values:
+  - ./values/_event.yml
+  - ./values/event.yml
+

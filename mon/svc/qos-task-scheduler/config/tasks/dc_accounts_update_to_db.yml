@@ -1,0 +1,11 @@
+dc_accounts_update_to_db:
+
+  dcs: []
+  # AICluster: ["BSCC-N22", "BSCC-N26", "BSCC-N28", "NC-N30", "BSCC-N36", "BSCC-N32-E", "CNGrid12"]
+  # AICloud: ["BSCC-N23"]
+
+  giturl: "https://git.paratera.net"
+  gitorg: "Microscope"
+  project_name: "dc_accounts_data_statistics_manual"
+
+  mysql: placeholder-mysql

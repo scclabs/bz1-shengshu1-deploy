@@ -1,0 +1,75 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-mtail.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-mtail.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-mtail
+      expr  : "1"
+
+    - alert: discovered_gpu_card_error_log
+      expr: >-
+        sum(increase(gpu_nvmr_error_total[5m])) by (node) > 0 
+        unless on (node) 
+        max(label_replace((DCGM_FI_DEV_XID_ERRORS == 32 or
+            DCGM_FI_DEV_XID_ERRORS == 38 or
+            DCGM_FI_DEV_XID_ERRORS == 48 or
+            DCGM_FI_DEV_XID_ERRORS == 61 or
+            DCGM_FI_DEV_XID_ERRORS == 62 or
+            DCGM_FI_DEV_XID_ERRORS == 63 or
+            DCGM_FI_DEV_XID_ERRORS == 64 or
+            DCGM_FI_DEV_XID_ERRORS == 68 or
+            DCGM_FI_DEV_XID_ERRORS == 74 or
+            DCGM_FI_DEV_XID_ERRORS == 79 or
+            DCGM_FI_DEV_XID_ERRORS == 92 or
+            DCGM_FI_DEV_XID_ERRORS == 94 or
+            DCGM_FI_DEV_XID_ERRORS == 95 or
+            DCGM_FI_DEV_XID_ERRORS == 119 or
+            DCGM_FI_DEV_XID_ERRORS == 120 or
+            DCGM_FI_DEV_XID_ERRORS == 154), "node", "$1", "Hostname", "(.*)")) by (node)
+      for: 0s
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 发现GPU异常日志
+        rename  : disable
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+      annotations:
+        summary: "**节点**: {{ $labels.node }} | **指标**: gpu_nvmr_error_total | **新增异常日志数**: {{ printf \"%.0f\" $value }} | **当前异常日志总数**: {{ printf `sum(gpu_nvmr_error_total{node=\"%s\"})` $labels.node | query | first | value }}"
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+
+    # - alert: discovered_gpu_card_error_log
+    #   expr: >-
+    #     sum(increase(gpu_nvmr_error_total{node="gn-10-195-0-209"}[5m]) offset 6h) by (node) > 0 
+    #     unless on (node) 
+    #     max(label_replace((DCGM_FI_DEV_XID_ERRORS == 32 or
+    #         DCGM_FI_DEV_XID_ERRORS == 38 or
+    #         DCGM_FI_DEV_XID_ERRORS == 48 or
+    #         DCGM_FI_DEV_XID_ERRORS == 61 or
+    #         DCGM_FI_DEV_XID_ERRORS == 62 or
+    #         DCGM_FI_DEV_XID_ERRORS == 63 or
+    #         DCGM_FI_DEV_XID_ERRORS == 64 or
+    #         DCGM_FI_DEV_XID_ERRORS == 68 or
+    #         DCGM_FI_DEV_XID_ERRORS == 74 or
+    #         DCGM_FI_DEV_XID_ERRORS == 79 or
+    #         DCGM_FI_DEV_XID_ERRORS == 92 or
+    #         DCGM_FI_DEV_XID_ERRORS == 94 or
+    #         DCGM_FI_DEV_XID_ERRORS == 95 or
+    #         DCGM_FI_DEV_XID_ERRORS == 119 or
+    #         DCGM_FI_DEV_XID_ERRORS == 120 or
+    #         DCGM_FI_DEV_XID_ERRORS == 154), "node", "$1", "Hostname", "(.*)")) by (node)
+    #   for: 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 发现GPU异常日志
+    #     rename  : disable
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.node }} | **指标**: gpu_nvmr_error_total | **新增异常日志数**: {{ printf \"%.0f\" $value }} | **当前异常日志总数**: {{ printf `sum(gpu_nvmr_error_total{node=\"%s\"} offset 6h)` $labels.node | query | first | value }}"

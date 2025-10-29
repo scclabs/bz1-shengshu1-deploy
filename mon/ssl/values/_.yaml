@@ -1,0 +1,17 @@
+
+prometheus-blackbox-exporter:
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: "true"
+
+x509-certificate-exporter:
+  secretsExporter:
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"

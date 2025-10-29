@@ -1,0 +1,7 @@
+#!/bin/bash
+
+dir=$(dirname $0)
+cd $dir
+
+helmwave build --tags loki --plandir .helmwave/loki
+

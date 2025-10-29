@@ -1,0 +1,11 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: alert-adaptor-scrape
+  namespace: mon
+spec:
+  endpoints:
+    - port: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qos-alert-adaptor

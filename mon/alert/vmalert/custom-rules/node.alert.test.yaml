@@ -1,0 +1,42 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-node-test.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-node-test.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-node-test
+      expr  : "1"
+
+    # # 报警：节点根目录使用率过高
+    # - alert: discoverd_node_rootfs_usage_too_high
+    #   expr: label_replace((node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"}) * 100 / node_filesystem_size_bytes{mountpoint="/"} > 70, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点根目录使用率过高
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 根目录使用率: {{ printf \"%.2f\" $value }}%"
+
+    # 报警：节点状态异常
+    # - alert: discoverd_custom_alert
+    #   expr: kube_node_status_condition{condition="Ready",status="true",node=~"gn037.hs1.local|gn011.hs1.local"} == 1
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 发现节点状态异常
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 状态: NotReady"
+

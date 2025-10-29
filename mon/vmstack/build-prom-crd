@@ -1,0 +1,3 @@
+#!/bin/bash
+
+helmwave build --tags prom-crd --plandir .helmwave/prom-crd

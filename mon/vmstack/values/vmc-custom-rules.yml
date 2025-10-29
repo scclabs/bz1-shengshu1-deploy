@@ -1,0 +1,204 @@
+additionalVictoriaMetricsMap:
+
+  ids-dcgm-exporter:
+    groups:
+    - name: dcgm_node_rules
+      interval: 15s
+      rules:
+      # 节点 gpu 使用率
+      - record: re:node_gpu_util
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_GPU_UTIL), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_cnt
+        expr  : label_replace(count by (instance, Hostname) (DCGM_FI_DEV_GPU_UTIL), "node", "$1", "Hostname", "(.*)")
+
+      # PROF (%)
+      - record: re:node_gpu_pipe_tensor_active
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_PROF_PIPE_TENSOR_ACTIVE), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_pipe_fp64_active
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_PROF_PIPE_FP64_ACTIVE), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_pipe_fp32_active
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_PROF_PIPE_FP32_ACTIVE), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_pipe_fp16_active
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_PROF_PIPE_FP16_ACTIVE), "node", "$1", "Hostname", "(.*)")
+
+      # GMEM
+      - record: re:node_gpu_fb_used_MB
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_DEV_FB_USED), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_fb_free_MB
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_DEV_FB_FREE), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_fb_util
+        expr  : 100 * label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_FB_USED/(DCGM_FI_DEV_FB_FREE+DCGM_FI_DEV_FB_USED)), "node", "$1", "Hostname", "(.*)")
+
+      # PCIE
+      - record: re:node_gpu_pcie_tx_Bps
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_PROF_PCIE_TX_BYTES), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_pcie_rx_Bps
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_PROF_PCIE_RX_BYTES), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_pcie_Bps_total
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_PROF_PCIE_TX_BYTES + DCGM_FI_PROF_PCIE_RX_BYTES), "node", "$1", "Hostname", "(.*)")
+
+      # 节点 gpu 编码解码使用率
+      - record: re:node_gpu_enc_util
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_ENC_UTIL), "node", "$1", "Hostname", "(.*)")
+
+      # 节点 gpu 解码使用率
+      - record: re:node_gpu_dec_util
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_DEC_UTIL), "node", "$1", "Hostname", "(.*)")
+
+      # 节点 gpu 内存拷贝使用率
+      - record: re:node_gpu_mem_copy_util
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_MEM_COPY_UTIL), "node", "$1", "Hostname", "(.*)")
+
+      # 节点 gpu nvlink 总带宽
+      - record: re:node_gpu_nvlink_bdw_total
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_DEV_NVLINK_BANDWIDTH_TOTAL), "node", "$1", "Hostname", "(.*)")
+
+      # 节点 gpu 总功率
+      - record: re:node_gpu_power_usage_total
+        expr  : label_replace(sum by (instance, Hostname) (DCGM_FI_DEV_POWER_USAGE), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_power_usage_avg
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_POWER_USAGE), "node", "$1", "Hostname", "(.*)")
+
+      # 节点 gpu 温度
+      - record: re:node_gpu_temp_avg
+        expr  : label_replace(avg by (instance, Hostname) (DCGM_FI_DEV_GPU_TEMP), "node", "$1", "Hostname", "(.*)")
+
+      - record: re:node_gpu_temp_max
+        expr  : label_replace(max by (instance, Hostname) (DCGM_FI_DEV_GPU_TEMP), "node", "$1", "Hostname", "(.*)")
+
+    - name: dcgm_cluster_rules
+      interval: 15s
+      rules:
+      # 集群 gpu 使用率
+      - record: re:cluster_gpu_util
+        expr  : avg(DCGM_FI_DEV_GPU_UTIL)
+
+      - record: re:cluster_gpu_cnt
+        expr  : count(DCGM_FI_DEV_GPU_UTIL)
+
+      # PROF (%)
+      - record: re:cluster_gpu_pipe_tensor_active
+        expr  : avg(DCGM_FI_PROF_PIPE_TENSOR_ACTIVE)
+
+      - record: re:cluster_gpu_pipe_fp64_active
+        expr  : avg(DCGM_FI_PROF_PIPE_FP64_ACTIVE)
+
+      - record: re:cluster_gpu_pipe_fp32_active
+        expr  : avg(DCGM_FI_PROF_PIPE_FP32_ACTIVE)
+
+      - record: re:cluster_gpu_pipe_fp16_active
+        expr  : avg(DCGM_FI_PROF_PIPE_FP16_ACTIVE)
+
+      # GMEM
+      - record: re:cluster_gpu_fb_used_MB
+        expr  : sum(DCGM_FI_DEV_FB_USED)
+
+      - record: re:cluster_gpu_fb_free_MB
+        expr  : sum(DCGM_FI_DEV_FB_FREE)
+
+      - record: re:cluster_gpu_fb_util
+        expr  : 100 * avg(DCGM_FI_DEV_FB_USED/(DCGM_FI_DEV_FB_FREE+DCGM_FI_DEV_FB_USED))
+
+      # PCIE
+      - record: re:cluster_gpu_pcie_tx_Bps
+        expr  : sum(DCGM_FI_PROF_PCIE_TX_BYTES)
+
+      - record: re:cluster_gpu_pcie_rx_Bps
+        expr  : sum(DCGM_FI_PROF_PCIE_RX_BYTES)
+
+      - record: re:cluster_gpu_pcie_Bps_total
+        expr  : sum(DCGM_FI_PROF_PCIE_TX_BYTES + DCGM_FI_PROF_PCIE_RX_BYTES)
+
+      # 集群 gpu 编码解码使用率
+      - record: re:cluster_gpu_enc_util
+        expr  : avg(DCGM_FI_DEV_ENC_UTIL)
+
+      # 集群 gpu 解码使用率
+      - record: re:cluster_gpu_dec_util
+        expr  : avg(DCGM_FI_DEV_DEC_UTIL)
+
+      # 集群 gpu 内存拷贝使用率
+      - record: re:cluster_gpu_mem_copy_util
+        expr  : avg(DCGM_FI_DEV_MEM_COPY_UTIL)
+
+      # 集群 gpu nvlink 总带宽
+      - record: re:cluster_gpu_nvlink_bdw_total
+        expr  : sum(DCGM_FI_DEV_NVLINK_BANDWIDTH_TOTAL)
+
+      # 集群 gpu 总功率
+      - record: re:cluster_gpu_power_usage_total
+        expr  : sum(DCGM_FI_DEV_POWER_USAGE)
+
+      - record: re:cluster_gpu_power_usage_avg
+        expr  : avg(DCGM_FI_DEV_POWER_USAGE)
+
+      # 集群 gpu 温度
+      - record: re:cluster_gpu_temp_avg
+        expr  : avg(DCGM_FI_DEV_GPU_TEMP)
+
+      - record: re:cluster_gpu_temp_max
+        expr  : max(DCGM_FI_DEV_GPU_TEMP)
+
+  ids-node-exporter:
+    groups:
+    - name: nodes_rules
+      interval: 15s
+      rules:
+      - record: re:node_cpu_util
+        #expr  : label_replace( 100 - 100 * avg(irate(node_cpu_seconds_total{mode="idle"}[1m]))without(mode,cpu), "node", "$1", "instance", "(.*):9100")
+        expr  : 100 - 100 *label_replace(avg(irate(node_cpu_seconds_total{mode="idle"}[1m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_mem_util
+        #expr  : label_replace( (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) * 100 / node_memory_MemTotal_bytes, "node", "$1", "instance", "(.*):9100")
+        expr  : 100 * label_replace(avg((node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+
+      # ib 速率
+      - record: re:node_ib_tx_Bps
+        #expr  : label_replace( sum(irate(node_infiniband_port_data_transmitted_bytes_total[4m])) without(device, port), "node", "$1", "instance", "(.*):9100")
+        expr  : label_replace(sum(irate(node_infiniband_port_data_transmitted_bytes_total[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_ib_rx_Bps
+        #expr  : label_replace( sum(irate(node_infiniband_port_data_received_bytes_total[4m])) without(device, port), "node", "$1", "instance", "(.*):9100")
+        expr  : label_replace(sum(irate(node_infiniband_port_data_received_bytes_total[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_ib_Bps_total
+        #expr: label_replace( sum(irate(node_infiniband_port_data_transmitted_bytes_total[4m])) without(device, port) + sum(irate(node_infiniband_port_data_received_bytes_total[4m])) without(device, port) , "node", "$1", "instance", "(.*):9100")
+        expr : label_replace(sum(irate(node_infiniband_port_data_transmitted_bytes_total[4m])) by (instance) + sum(irate(node_infiniband_port_data_received_bytes_total[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+
+      # 网络速率
+      - record: re:node_net_tx_Bps
+        #expr  : label_replace( sum(irate(node_network_transmit_bytes_total[4m])) without(device), "node", "$1", "instance", "(.*):9100")
+        expr : label_replace(sum(irate(node_network_transmit_bytes_total{device=~"^eth.*|^en[sop].*"}[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_net_rx_Bps
+        expr  : label_replace(sum(irate(node_network_receive_bytes_total{device=~"^eth.*|^en[sop].*"}[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_net_Bps_total
+        expr  : label_replace(sum(irate(node_network_transmit_bytes_total{device=~"^eth.*|^en[sop].*"}[4m])) by (instance) + sum(irate(node_network_receive_bytes_total{device=~"^eth.*|^en[sop].*"}[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+
+      # 磁盘速率
+      - record: re:node_disk_read_Bps
+        expr  : label_replace(sum(irate(node_disk_read_bytes_total[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_disk_write_Bps
+        expr  : label_replace(sum(irate(node_disk_written_bytes_total[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      - record: re:node_disk_rw_Bps
+        expr  : label_replace(sum(irate(node_disk_read_bytes_total[4m])) by (instance) + sum(irate(node_disk_written_bytes_total[4m])) by (instance), "internal_ip", "$1", "instance", "(.*):.*") + on(internal_ip) group_left(node) (kube_node_info * 0)
+
+      # 文件系统使用率
+      - record: re:node_fs_cap_util
+        expr  : avg by (device,fstype,instance,node,mountpoint) (label_replace((node_filesystem_size_bytes{fstype!="tmpfs"} - node_filesystem_avail_bytes) * 100 / node_filesystem_size_bytes, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0))
+
+  ids-user-custom:
+    groups:
+    - name: nodes_stats
+      interval: 15s
+      rules:
+      - record: re:gpu_util_over5_node_cnt
+        expr  : count(avg(DCGM_FI_DEV_GPU_UTIL{})by(Hostname) > 5)
+
+      - record: re:gpu_util_over5_node_ratio
+        expr  : count(avg(DCGM_FI_DEV_GPU_UTIL{})by(Hostname) > 5) / count(kube_node_status_capacity{resource="nvidia_com_gpu",node!=""}) * 100

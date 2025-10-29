@@ -1,0 +1,897 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: qywx-qh3-4090-5090-rsc-mt-ids-alert
+  namespace: mon
+spec:
+  receivers:
+  - name: robot
+    webhook_configs:
+    - url: http://al-adaptor-qos-alert-adaptor:5000/am/wx/robot?key=228f6402-128d-4b38-a86e-7d55c5905071
+  - name: robot-no-resolved
+    webhook_configs:
+    - send_resolved: false
+      url: http://al-adaptor-qos-alert-adaptor:5000/am/wx/robot?key=228f6402-128d-4b38-a86e-7d55c5905071
+  - name: blackhole
+  route:
+    continue: true
+    matchers:
+    - alertname =~ "discovered_.*"
+    - retitle =~ ".*"
+    receiver: blackhole
+    routes:
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discovered_gpu_card_xid_errors_special_attention)"
+      - retitle =~ "bz1-shenshu1 - (节点GPU出现 XID 错误)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - matchers:
+      - alertname = "4781546152"
+      receiver: robot
+    - matchers:
+      - alertname = "4567453245"
+      receiver: robot-no-resolved
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alertmanager-receiver-fs-ids-test
+  namespace: mon
+spec:
+  receivers:
+  - name: robot
+    webhook_configs:
+    - url: http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=5bcaab7d-3897-4a7d-90a8-d5e192481ef3
+  - name: robot-no-resolved
+    webhook_configs:
+    - send_resolved: false
+      url: http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=5bcaab7d-3897-4a7d-90a8-d5e192481ef3
+  - name: blackhole
+  route:
+    continue: true
+    matchers:
+    - alertname =~ "discoverd_.*"
+    - retitle =~ ".*"
+    - test =~ "1|fs-ids-test"
+    receiver: blackhole
+    routes:
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "discoverd_gpu_card_dropout|discoverd_gpu_card_xid_errors"
+      - test = "1"
+      receiver: robot
+      repeat_interval: 1h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_xid_errors_man_test)"
+      - test = "fs-ids-test"
+      receiver: robot
+      repeat_interval: 1h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_ib_card_not_recognized|discoverd_ib_card_dropout|discoverd_ib_speed_down|discoverd_ib_link_error)"
+      - test = "1"
+      receiver: robot
+      repeat_interval: 2m
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_eth_speed_down)"
+      - test = "1"
+      receiver: robot
+      repeat_interval: 2m
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_ib_device_temp_too_high)"
+      - test = "1"
+      receiver: robot
+      repeat_interval: 2m
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_node_rootfs_usage_too_high)"
+      - test = "1"
+      receiver: robot
+      repeat_interval: 2m
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - test = "1"
+      receiver: robot
+      repeat_interval: 2m
+    - matchers:
+      - alertname = "4781546152"
+      receiver: robot
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alertmanager-receiver-fs-qh3-alert
+  namespace: mon
+spec:
+  receivers:
+  - name: robot
+    webhook_configs:
+    - url: http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=0c36d9eb-c35b-4e68-81cb-8146ba746f8f
+  - name: robot-no-resolved
+    webhook_configs:
+    - send_resolved: false
+      url: http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=0c36d9eb-c35b-4e68-81cb-8146ba746f8f
+  - name: blackhole
+  route:
+    continue: true
+    matchers:
+    - alertname =~ "discoverd_.*"
+    - retitle =~ ".*"
+    receiver: blackhole
+    routes:
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - retitle =~ "bz1-shenshu1 - (pod 状态异常|pod container 状态异常|pod container 持续重启|pod
+        长时间 Terminating)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 1h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_custom_alert_no_resolved)"
+      - retitle =~ "bz1-shenshu1 - (pod 异常退出)"
+      - namespace !~ "prod"
+      - test = ""
+      receiver: robot-no-resolved
+      repeat_interval: 1h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - retitle =~ "bz1-shenshu1 - (节点根目录使用率过高|发现节点状态异常|节点维护通知|发现节点CPU持续维持在99%以上|节点GPU异常)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - retitle =~ "bz1-shenshu1 - (SSL证书即将过期)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "discoverd_gpu_card_dropout|discoverd_gpu_card_xid_errors"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_ib_card_not_recognized|discoverd_ib_card_dropout|discoverd_ib_speed_down|discoverd_ib_link_error)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_eth_speed_down)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_ib_device_temp_too_high)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_xid_errors_man)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_node_rootfs_usage_too_high)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_xid_errors_man)"
+      - test = "fs-mb-prod"
+      receiver: robot
+      repeat_interval: 1h
+    - matchers:
+      - alertname = "4781546152"
+      receiver: robot
+    - matchers:
+      - alertname = "4567453245"
+      receiver: robot-no-resolved
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alertmanager-receiver-fs-qh3-alert-ext
+  namespace: mon
+spec:
+  receivers:
+  - name: robot
+    webhook_configs:
+    - url: http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=9e4b8777-abf8-497d-a942-d36ba04043db
+  - name: robot-no-resolved
+    webhook_configs:
+    - send_resolved: false
+      url: http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=9e4b8777-abf8-497d-a942-d36ba04043db
+  - name: blackhole
+  route:
+    continue: true
+    matchers:
+    - alertname =~ "(discoverd|discovered)_.*"
+    - retitle =~ ".*"
+    receiver: blackhole
+    routes:
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - retitle =~ "bz1-shenshu1 - (发现节点状态异常|节点GPU异常|pod 长时间 Terminating)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "discoverd_gpu_card_dropout"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_xid_errors_man|discoverd_gpu_card_xid_errors)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discoverd_node_rootfs_usage_too_high)"
+      - test = ""
+      receiver: robot
+      repeat_interval: 6h
+    - continue: false
+      group_by:
+      - '...'
+      group_interval: 20s
+      group_wait: 10s
+      matchers:
+      - alertname =~ "(discovered_gpu_card_error_log)"
+      - retitle =~ "bz1-shenshu1 - (发现GPU异常日志)"
+      - test = ""
+      receiver: robot-no-resolved
+      repeat_interval: 6h
+    - matchers:
+      - alertname = "4781546152"
+      receiver: robot
+    - matchers:
+      - alertname = "4567453245"
+      receiver: robot-no-resolved
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-eth-record
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-eth-record
+    rules:
+    - expr: label_replace(node_network_speed_bytes, "internal_ip", "$1", "instance",
+        "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      record: re:node_network_speed_bytes
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-eth-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-eth-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-eth
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-eth.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-eth.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-eth
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-general-record
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-general-record
+    rules:
+    - expr: label_replace(up{instance=~"(.*):9100"}, "internal_ip", "$1", "instance",
+        "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      record: re:up
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-gpu-man-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-gpu-man-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-gpu-man-test
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-gpu-man.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-gpu-man.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-gpu-man
+    - alert: discoverd_gpu_card_xid_errors_man
+      annotations:
+        summary: '**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**:
+          {{ $labels.pci_bus_id }} | **Code**: {{ $value }}'
+      expr: ( re:DCGM_FI_DEV_XID_ERRORS == 32 or re:DCGM_FI_DEV_XID_ERRORS == 38 or
+        re:DCGM_FI_DEV_XID_ERRORS == 48 or re:DCGM_FI_DEV_XID_ERRORS == 61 or re:DCGM_FI_DEV_XID_ERRORS
+        == 62 or re:DCGM_FI_DEV_XID_ERRORS == 63 or re:DCGM_FI_DEV_XID_ERRORS == 64
+        or re:DCGM_FI_DEV_XID_ERRORS == 68 or re:DCGM_FI_DEV_XID_ERRORS == 74 or re:DCGM_FI_DEV_XID_ERRORS
+        == 79 or re:DCGM_FI_DEV_XID_ERRORS == 92 or re:DCGM_FI_DEV_XID_ERRORS == 94
+        or re:DCGM_FI_DEV_XID_ERRORS == 95 or re:DCGM_FI_DEV_XID_ERRORS == 119 or
+        re:DCGM_FI_DEV_XID_ERRORS == 120 or re:DCGM_FI_DEV_XID_ERRORS == 154 ) unless
+        on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"},
+        "Hostname", "$1", "node", "(.*)")
+      for: 0s
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - 节点GPU出现 XID 错误
+        severity: critical
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-gpu-record
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-gpu-record
+    rules:
+    - expr: avg by (Hostname,device,gpu,pci_bus_id,err_msg) (DCGM_FI_DEV_XID_ERRORS)
+      record: re:DCGM_FI_DEV_XID_ERRORS
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-gpu-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-gpu-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-gpu-test
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-gpu.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-gpu.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-gpu
+    - alert: discoverd_gpu_card_dropout
+      annotations:
+        summary: '节点: {{ $labels.node }} | 掉卡数量: {{ $value }}'
+      expr: (8 - kube_node_status_allocatable{resource="nvidia_com_gpu"} > 0) unless
+        on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 1m
+      labels:
+        rename: 发现掉卡现象
+        retitle: bz1-shenshu1 - 节点GPU异常
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        summary: '节点: {{ $labels.Hostname }} | GPU: {{ $labels.gpu }} | 当前连接带宽: {{
+          $value }}x'
+      expr: (DCGM_FI_DEV_PCIE_LINK_WIDTH != 16) unless on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"},
+        "Hostname", "$1", "node", "(.*)")
+      for: 1m
+      labels:
+        rename: GPU PCIE 连接带宽异常
+        retitle: bz1-shenshu1 - 节点GPU异常
+        severity: critical
+    - alert: discovered_gpu_card_xid_errors_special_attention
+      annotations:
+        summary: '**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**:
+          {{ $labels.pci_bus_id }} | **Code**: {{ $value }}'
+      expr: |-
+        ((DCGM_FI_DEV_XID_ERRORS == 32 or
+
+          DCGM_FI_DEV_XID_ERRORS == 38 or
+          DCGM_FI_DEV_XID_ERRORS == 48 or
+          DCGM_FI_DEV_XID_ERRORS == 61 or
+          DCGM_FI_DEV_XID_ERRORS == 62 or
+          DCGM_FI_DEV_XID_ERRORS == 63 or
+          DCGM_FI_DEV_XID_ERRORS == 64 or
+          DCGM_FI_DEV_XID_ERRORS == 68 or
+          DCGM_FI_DEV_XID_ERRORS == 74 or
+          DCGM_FI_DEV_XID_ERRORS == 79 or
+          DCGM_FI_DEV_XID_ERRORS == 92 or
+          DCGM_FI_DEV_XID_ERRORS == 94 or
+          DCGM_FI_DEV_XID_ERRORS == 95 or
+          DCGM_FI_DEV_XID_ERRORS == 119 or
+          DCGM_FI_DEV_XID_ERRORS == 120 or
+          DCGM_FI_DEV_XID_ERRORS == 154)
+          and on(Hostname,pci_bus_id) special_attention_bus_id > 0)
+        unless on(Hostname)
+
+          label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}, "Hostname", "$1", "node", "(.*)")
+      for: 0s
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - 节点GPU出现 XID 错误
+        severity: critical
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-ib-record
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-ib-record
+    rules:
+    - expr: label_replace(node_infiniband_rate_bytes_per_second, "internal_ip", "$1",
+        "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info
+        * 0)
+      record: re:node_infiniband_rate_bytes_per_second
+    - expr: label_replace(node_infiniband_info, "internal_ip", "$1", "instance", "(.*):9100")
+        + on(internal_ip) group_left(node) (kube_node_info * 0)
+      record: re:node_infiniband_info
+    - expr: label_replace(node_infiniband_physical_state_id, "internal_ip", "$1",
+        "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info
+        * 0)
+      record: re:node_infiniband_physical_state_id
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-ib-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-ib-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-ib-test
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-ib.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-ib.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-ib
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-k8.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-k8s.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-k8s
+    - alert: discoverd_custom_alert_no_resolved
+      annotations:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
+          <font color="orange">{{ $labels.pod }}</font> | 原因: <font color="red">{{
+          $labels.reason }}</font> | 节点: <font color="blue">{{ $labels.node }}</font>'
+      expr: (kube_pod_container_status_terminated_reason{namespace!~"default",reason!="Completed"}
+        == 1) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node)
+        kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 0m
+      labels:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        rename: disable
+        retitle: bz1-shenshu1 - pod 异常退出
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
+          <font color="orange">{{ $labels.pod }}</font> | 状态: <font color="red">{{
+          $labels.phase }}</font> | 节点: <font color="blue">{{ $labels.node }}</font>'
+      expr: ((kube_pod_status_phase{namespace!~"default|prod",phase!~"Running|Pending|Succeeded"}
+        > 0) and on (pod, namespace) (time() - kube_pod_start_time) > 300)  + on(namespace,pod)
+        group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 2m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - pod 状态异常
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
+          <font color="orange">{{ $labels.pod }}</font> | 容器: <font color="blue">{{
+          $labels.container }}</font> | 原因: <font color="red">{{ $labels.reason }}</font>
+          | 节点: <font color="blue">{{ $labels.node }}</font>'
+      expr: (kube_pod_container_status_waiting_reason{namespace!~"default|prod",reason!~"ContainerCreating|PodInitializing"}
+        == 1 or kube_pod_container_status_waiting_reason{namespace!~"default",reason!~"ContainerCreating|PodInitializing"}
+        offset 30s == 1)  + on(namespace,pod) group_left(node) (kube_pod_info * 0)
+        unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 3m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - pod container 状态异常
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
+          <font color="orange">{{ $labels.pod }}</font> | 容器: <font color="blue">{{
+          $labels.container }}</font>  | 重启次数: <font color="red">{{ $value }}</font>
+          | 节点: <font color="blue">{{ $labels.node }}</font>'
+      expr: (kube_pod_container_status_restarts_total{namespace!~"default"} > 2 and
+        (increase(kube_pod_container_status_restarts_total[6m]) > 0 or increase(kube_pod_container_status_restarts_total[6m])
+        offset 1m > 0 )) + on(namespace,pod) group_left(node) (kube_pod_info * 0)
+        unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 2m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - pod container 持续重启
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
+          <font color="orange">{{ $labels.pod }}</font> | 容器: <font color="blue">{{
+          $labels.container }}</font> | 节点: <font color="blue">{{ $labels.node }}</font>'
+      expr: ((time() - kube_pod_deletion_timestamp{namespace!~"default"}) > 600) +
+        on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 0s
+      labels:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        rename: disable
+        retitle: bz1-shenshu1 - pod 长时间 Terminating
+        severity: critical
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-k8s-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-k8s-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-k8s-test
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-mtail.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-mtail.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-mtail
+    - alert: discovered_gpu_card_error_log
+      annotations:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        summary: '**节点**: {{ $labels.node }} | **指标**: gpu_nvmr_error_total | **新增异常日志数**:
+          {{ printf "%.0f" $value }} | **当前异常日志总数**: {{ printf `sum(gpu_nvmr_error_total{node="%s"})`
+          $labels.node | query | first | value }}'
+      expr: |-
+        sum(increase(gpu_nvmr_error_total[5m])) by (node) > 0  unless on (node)  max(label_replace((DCGM_FI_DEV_XID_ERRORS == 32 or
+
+            DCGM_FI_DEV_XID_ERRORS == 38 or
+            DCGM_FI_DEV_XID_ERRORS == 48 or
+            DCGM_FI_DEV_XID_ERRORS == 61 or
+            DCGM_FI_DEV_XID_ERRORS == 62 or
+            DCGM_FI_DEV_XID_ERRORS == 63 or
+            DCGM_FI_DEV_XID_ERRORS == 64 or
+            DCGM_FI_DEV_XID_ERRORS == 68 or
+            DCGM_FI_DEV_XID_ERRORS == 74 or
+            DCGM_FI_DEV_XID_ERRORS == 79 or
+            DCGM_FI_DEV_XID_ERRORS == 92 or
+            DCGM_FI_DEV_XID_ERRORS == 94 or
+            DCGM_FI_DEV_XID_ERRORS == 95 or
+            DCGM_FI_DEV_XID_ERRORS == 119 or
+            DCGM_FI_DEV_XID_ERRORS == 120 or
+            DCGM_FI_DEV_XID_ERRORS == 154), "node", "$1", "Hostname", "(.*)")) by (node)
+      for: 0s
+      labels:
+        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        rename: disable
+        retitle: bz1-shenshu1 - 发现GPU异常日志
+        severity: critical
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-node-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-node-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-node-test
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-node.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-node.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-node
+    - alert: discoverd_node_rootfs_usage_too_high
+      annotations:
+        summary: '节点: {{ $labels.node }} | 根目录使用率: {{ printf "%.2f" $value }}%'
+      expr: label_replace((node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"})
+        * 100 / node_filesystem_size_bytes{mountpoint="/"} >= 85, "internal_ip", "$1",
+        "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info
+        * 0)
+      for: 1m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - 节点根目录使用率过高
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        summary: '节点: {{ $labels.node }} | 状态: NotReady'
+      expr: kube_node_status_condition{condition="Ready",status="true"} == 0 unless
+        on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 1m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - 发现节点状态异常
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        summary: '节点: {{ $labels.node }} | 状态: 维修中'
+      expr: kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for: 0m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - 节点维护通知
+        severity: critical
+    - alert: discoverd_custom_alert
+      annotations:
+        pending_time: 2m
+        summary: '节点: {{ $labels.node }} | 当前CPU使用率: {{ printf "%.2f" $value }}'
+      expr: label_replace((1 - avg(irate(node_cpu_seconds_total{mode="idle"}[1m]))
+        by (instance)) * 100 >= 99, "internal_ip", "$1", "instance", "(.*):9100")
+        + on(internal_ip) group_left(node) (kube_node_info * 0)
+      for: 2m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - 发现节点CPU持续维持在99%以上
+        severity: critical
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-ssl-test.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-ssl-test.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-ssl-test
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  labels:
+    app: alert
+    app.kubernetes.io/name: alert
+  name: vm-alert-custom-rules-ssl.rules
+  namespace: mon
+spec:
+  groups:
+  - name: custom-rules-ssl.rules
+    rules:
+    - expr: "1"
+      record: rule:vm-alert-custom-rules-ssl
+    - alert: discoverd_custom_alert
+      annotations:
+        summary: '**URL**: {{ $labels.subject_CN }} | **Secret**: {{ $labels.secret_namespace
+          }}.{{ $labels.secret_name }} | **有效期剩余**: <font color=''red''>{{ printf
+          "%.2f" $value }}d</font>'
+      expr: (x509_cert_not_after - time()) / 86400 < 14
+      for: 2m
+      labels:
+        rename: disable
+        retitle: bz1-shenshu1 - SSL证书即将过期
+        severity: critical

@@ -1,0 +1,18 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-general-record
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-general-record
+
+    rules:
+
+    # 为 up{} 附上 node 标签，依赖 kube-state-metrics 采集组件
+    # 应想其它方案为原始指标附上 node 标签
+    - record: re:up
+      expr  : label_replace(up{instance=~"(.*):9100"}, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)

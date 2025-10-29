@@ -1,0 +1,79 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-gpu-test.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-gpu-test.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-gpu-test
+      expr  : "1"
+
+    # # gpu 掉卡
+    # - alert: discoverd_gpu_card_dropout
+    #   # 可分配数 < 总卡数
+    #   expr: (kube_node_status_capacity{resource="nvidia_com_gpu"} - (kube_node_status_allocatable{resource="nvidia_com_gpu",node="gn010.hs5h.local"} - 1)) > 0
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU异常
+    #     rename  : 发现掉卡现象
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.node }} | **掉卡数量**: {{ $value }}"
+
+    # - alert: discoverd_gpu_card_xid_errors_test
+    #   expr: DCGM_FI_DEV_XID_ERRORS{Hostname="gn003.hs1.local",device="nvidia0"} + 1 > 0
+    #   for : 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU异常
+    #     rename  : 发现 GPU 出现 xid 错误
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **Code**: {{ $value }}"
+
+    # # DCGM_FI_DEV_ECC_SBE_VOL_TOTAL :  gpu单比特易失性 ECC 错误的数量，可自动修复
+    # # DCGM_FI_DEV_ECC_SBE_AGG_TOTAL :  gpu单比特持久性 ECC 错误的数量，可自动修复
+    # # DCGM_FI_DEV_ECC_DBE_VOL_TOTAL :  gpu双比特易失性 ECC 错误的数量，不可修复
+    # # DCGM_FI_DEV_ECC_DBE_AGG_TOTAL :  gpu双比特持久性 ECC 错误的数量，不可修复
+
+    # - alert: discoverd_gpu_ecc_dbe_vol_test
+    #   expr : increase(DCGM_FI_DEV_ECC_DBE_VOL_TOTAL{Hostname="gn003.hs1.local",device="nvidia0"}[30s]) + 1 > 0
+    #   for : 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU异常
+    #     rename  : 发现 GPU 出现 不可修复ECC错误
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **类型**: DBE_VOL 双比特易失性 | **次数**: {{ $value }}"
+
+    # - alert: discoverd_gpu_ecc_dbe_agg_test
+    #   expr : increase(DCGM_FI_DEV_ECC_DBE_AGG_TOTAL{Hostname="gn003.hs1.local",device="nvidia0"}[30s]) + 1 > 0
+    #   for : 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU异常
+    #     rename  : 发现 GPU 出现 不可修复ECC错误
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **类型**: DBE_AGG 双比特持久性 | **次数**: {{ $value }}"
+
+    # - alert: discoverd_custom_alert
+    #   expr: (DCGM_FI_DEV_PCIE_LINK_WIDTH{Hostname="gn012.ZW11.local",gpu="0"} - 8 != 16) unless on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}, "Hostname", "$1", "node", "(.*)")
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU异常 
+    #     rename  : GPU PCIE 连接带宽异常
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.Hostname }} | GPU: {{ $labels.gpu }} | 当前连接带宽: {{ $value }}x"

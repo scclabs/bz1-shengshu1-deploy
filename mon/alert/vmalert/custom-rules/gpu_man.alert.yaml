@@ -1,0 +1,113 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-gpu-man.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-gpu-man.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-gpu-man
+      expr  : "1"
+
+    # 32: Invalid or corrupted push buffer stream。 事件由 PCIE 总线上管理 NVIDIA 驱动和 GPU 之间通信的 DMA 控制器上报，通常是 PCI 质量问题导致，而非用户程序产生。
+    # 38: Driver firmware error。通常是驱动固件错误而非硬件问题
+    # 48: Double Bit ECC Error（DBE）。当 GPU 发生不可纠正的错误时，会上报 Xid48 事件。该错误也会同时反馈给用户的应用程序。通常需要重置 GPU 或重启节点来清除这个错误。
+    # 61: Internal micro-controller breakpoint/warning。 GPU 内部引擎停止工作，客户业务已经受到影响。
+    # 62: Internal micro-controller halt。GPU 内部引擎停止工作，客户业务已经受到影响。
+    # 63: ECC page retirement or row remapping recording event。当应用程序遭遇到 GPU 显存硬件错误时，NVIDIA 自纠错机制会将错误的内存区域retire 或者 remap，retirement 和remapped 信息需要记录到 infoROM 中才能永久生效。
+    #     Volt 架构：记录 ECC page retirement 事件到 infoROM 成功。
+    #     Ampere 架构：记录 row remapping 事件到 infoROM 成功
+    # 64: ECC page retirement or row remapper recording failure。与 Xid63 的触发场景类似，只是 Xid63 代表 retirement 和 remapped 信息成功记录到了 infoROM，Xid64 代表该记录操作失败。
+    # 74: NVLINK Error。NVLink 硬件错误产生的 Xid，收到此事件说明 GPU 已经出现严重硬件故障，需要下线维修。
+    # 79: GPU has fallen off the bus。GPU 硬件检测到掉卡，无法从总线上检测到，收到此事件说明 GPU 已经出现严重硬件故障，需要下线维修。
+    # 92: High single-bit ECC error rate。硬件或驱动故障。
+    # 94: Contained ECC error。当应用程序遭遇到 GPU 不可纠正的显存 ECC 错误时，NVIDIA 错误抑制机制会尝试将错误抑制在踩到硬件故障的应用程序，而不会让错误导致 GPU 上的所有应用程序受到影响。当抑制机制成功抑制错误时，会产生Xid 94事件，仅影响遭遇了不可纠正 ECC 错误的应用程序。
+    # 95: Uncontained ECC error。与 Xid94 的触发场景类似。只是 Xid94 代表抑制成功，而 Xid95 代表抑制失败，此时表明运行在该 GPU 上的所有应用程序都已受到影响。
+    # 119：当在GPU 的GSP核心上运行的代码中发生错误和/或在等待GPU的GSP核心响应 RPC消息时发生超时时，可以记录这些事件之一或两者。如果错误仍然存在，则可能需要重置GPU 或重新启动节点电源。如果重新启动电源后再次出现此问题，请按照NVIDIAGPU 调试指南心文档了解其他调试步骤
+    # 120：同上
+    # 注意，由客户的服务处理
+    - alert: discoverd_gpu_card_xid_errors_man
+      expr: >-
+        (
+        re:DCGM_FI_DEV_XID_ERRORS == 32 or
+        re:DCGM_FI_DEV_XID_ERRORS == 38 or
+        re:DCGM_FI_DEV_XID_ERRORS == 48 or
+        re:DCGM_FI_DEV_XID_ERRORS == 61 or
+        re:DCGM_FI_DEV_XID_ERRORS == 62 or
+        re:DCGM_FI_DEV_XID_ERRORS == 63 or
+        re:DCGM_FI_DEV_XID_ERRORS == 64 or
+        re:DCGM_FI_DEV_XID_ERRORS == 68 or
+        re:DCGM_FI_DEV_XID_ERRORS == 74 or
+        re:DCGM_FI_DEV_XID_ERRORS == 79 or
+        re:DCGM_FI_DEV_XID_ERRORS == 92 or
+        re:DCGM_FI_DEV_XID_ERRORS == 94 or
+        re:DCGM_FI_DEV_XID_ERRORS == 95 or
+        re:DCGM_FI_DEV_XID_ERRORS == 119 or
+        re:DCGM_FI_DEV_XID_ERRORS == 120 or
+        re:DCGM_FI_DEV_XID_ERRORS == 154
+        ) unless on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}, "Hostname", "$1", "node", "(.*)")
+      for : 0s
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 节点GPU出现 XID 错误
+        rename  : disable
+        #test    : "1"      # 注释掉此行，将转为线上
+      annotations:
+        summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**: {{ $labels.pci_bus_id }} | **Code**: {{ $value }}"
+
+    # #--------------------------------
+    # # for fs-mb-prod 这里是线上群的测试，取消注释即为开启测试，消息会发到生产环境的群，请注意
+    # #--------------------------------
+    # - alert: discoverd_gpu_card_xid_errors_man
+    #   expr: >-
+    #     re:DCGM_FI_DEV_XID_ERRORS{Hostname="gn033.hs5h.local",device="nvidia0"} + 32 == 32 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 38 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 48 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 61 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 62 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 63 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 64 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 74 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 79 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 92 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 94 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 95
+    #   for : 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU出现 XID 错误 - 自动cordon
+    #     rename  : disable
+    #     test    : fs-mb-prod
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **Code**: {{ $value }}"
+
+
+    # - alert: discoverd_gpu_card_xid_errors_man
+    #   expr: >-
+    #     re:DCGM_FI_DEV_XID_ERRORS == 32 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 38 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 48 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 61 or
+    #     re:DCGM_FI_DEV_XID_ERRORS{Hostname="gn034.hs1.local",device="nvidia0"} + 62 == 62 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 63 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 64 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 74 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 79 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 92 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 94 or
+    #     re:DCGM_FI_DEV_XID_ERRORS == 95
+    #   for : 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU出现 XID 错误 - 自动cordon
+    #     rename  : disable
+    #     test    : fs-mb-prod
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **Code**: {{ $value }}"

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm repo update grafana
+helm repo update bitnami
+
+helm pull grafana/loki
+helm pull grafana/promtail
+helm pull bitnami/kubernetes-event-exporter

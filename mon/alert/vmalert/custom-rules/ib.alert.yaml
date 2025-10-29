@@ -1,0 +1,152 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-ib.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-ib.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-ib
+      expr  : "1"
+
+    # # 报警：节点检测不到 IB 卡（所有节点）
+    # - alert: discoverd_ib_card_not_recognized
+    #   expr: re:up{instance=~".*:9100"}==1 unless on (instance) re:node_infiniband_info unless on (instance) re:node_infiniband_rate_bytes_per_second
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点检测不到 IB卡
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} "
+
+    # # 报警：节点 IB 卡数量异常
+    # - alert: discoverd_ib_card_dropout
+    #   expr: count(re:node_infiniband_info{node=~"gn.*",device!~"mlx5_bond_0"}) by (node) != 8
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 数量异常
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 期望数量: 9 | 报警数量: {{ $value }}"
+
+    # - alert: discoverd_ib_card_dropout
+    #   expr: count(re:node_infiniband_info{node=~"mn.*"}) by (node) != 2
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 数量异常
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 期望数量: 2 | 报警数量: {{ $value }}"
+
+    # - alert: discoverd_ib_card_dropout
+    #   expr: count(re:node_infiniband_info{node=~"sm.*"}) by (node) != 3
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 数量异常
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 期望数量: 2 | 报警数量: {{ $value }}"
+
+    # # 报警： 节点 IB卡 降速（gpu节点）
+    # - alert: discoverd_ib_speed_down
+    #   expr: re:node_infiniband_rate_bytes_per_second{node=~"gn.*",device!~".*bond.*"} * 8 / 1000000000 != 400
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 降速
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望速度: 400 | 报警速度：{{ $value }}"
+
+    # - alert: discoverd_ib_speed_down
+    #   expr: re:node_infiniband_rate_bytes_per_second{node=~"mn.*",device!~".*bond.*",device=~"mlx5_0"} * 8 / 1000000000 != 100
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 降速
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望速度: 100 | 报警速度：{{ $value }}"
+
+    # - alert: discoverd_ib_speed_down
+    #   expr: re:node_infiniband_rate_bytes_per_second{node=~"sm.*",device!~".*bond.*",device=~"mlx5_0"} * 8 / 1000000000 != 100
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 降速
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望速度: 400 | 报警速度：{{ $value }}"
+
+    # - alert: discoverd_ib_speed_down
+    #   expr: re:node_infiniband_rate_bytes_per_second{node=~"sm.*",device!~".*bond.*",device=~"mlx5_2"} * 8 / 1000000000 != 400
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 降速
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望速度: 400 | 报警速度：{{ $value }}"
+
+    # # 节点 IB卡 链接异常（所有gpu节点）
+    # - alert: discoverd_ib_link_error
+    #   expr : re:node_infiniband_physical_state_id{node=~"gn.*"} != 5
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 链接异常
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望状态: 5(link up) | 报警状态：{{ $value }}"
+
+    # - alert: discoverd_ib_link_error
+    #   expr : re:node_infiniband_physical_state_id{node=~"sm.*",device=~"mlx5_0|mlx5_2"} != 5
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 链接异常
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望状态: 5(link up) | 报警状态：{{ $value }}"
+
+    # - alert: discoverd_ib_link_error
+    #   expr : re:node_infiniband_physical_state_id{node=~"mn.*",device="mlx5_0"} != 5
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB卡 链接异常
+    #     rename  : disable
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望状态: 5(link up) | 报警状态：{{ $value }}"
+
+    # # ib 设备温度过高
+    # - alert: discoverd_ib_device_temp_too_high
+    #   expr : qos_ib_node_temp{type="1"} > 90
+    #   for  : 5m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB 卡温度过高
+    #     rename  : disable
+    #   annotations:
+    #     summary: "设备: {{ $labels.desc }} | guid: {{ $labels.nodeguid }} | 期望温度: <= 90 | 报警温度：{{ $value }}"
+
+    # - alert: discoverd_ib_device_temp_too_high
+    #   expr : qos_ib_cable_temp{type="1"} > 80
+    #   for  : 5m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB 线设备温度过高
+    #     rename  : disable
+    #   annotations:
+    #     summary: "设备: {{ $labels.desc }} <--> {{ $labels.nodeguid }}:{{ $labels.port2 }} | 期望温度: <= 80 | 报警温度：{{ $value }}"

@@ -1,0 +1,63 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-node.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-node.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-node
+      expr  : "1"
+
+    # 报警：节点根目录使用率过高
+    - alert: discoverd_node_rootfs_usage_too_high
+      expr: label_replace((node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"}) * 100 / node_filesystem_size_bytes{mountpoint="/"} >= 85, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      for : 1m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 节点根目录使用率过高
+        rename  : disable
+      annotations:
+        summary: "节点: {{ $labels.node }} | 根目录使用率: {{ printf \"%.2f\" $value }}%"
+
+
+    # 报警：节点状态异常
+    - alert: discoverd_custom_alert
+      expr: kube_node_status_condition{condition="Ready",status="true"} == 0 unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for : 1m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 发现节点状态异常
+        rename  : disable
+      annotations:
+        summary: "节点: {{ $labels.node }} | 状态: NotReady"
+
+    # 报警：节点状态异常
+    - alert: discoverd_custom_alert
+      expr: kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for : 0m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 节点维护通知
+        rename  : disable
+      annotations:
+        summary: "节点: {{ $labels.node }} | 状态: 维修中"
+
+    # 报警：节点
+    - alert: discoverd_custom_alert
+      expr : label_replace((1 - avg(irate(node_cpu_seconds_total{mode="idle"}[1m])) by (instance)) * 100 >= 99, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)
+      for  : 2m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 发现节点CPU持续维持在99%以上
+        rename  : disable
+      annotations:
+        summary: "节点: {{ $labels.node }} | 当前CPU使用率: {{ printf \"%.2f\" $value }}"
+        pending_time: 2m

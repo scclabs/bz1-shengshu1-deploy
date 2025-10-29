@@ -1,0 +1,16 @@
+# partitions config
+partitions: {}
+
+# mysql config
+mysql: placeholder-mysql    # find it in config/databases.yml -> databases:
+# prometheus config
+prometheus: qos_cn
+# clickhouse config
+clickhouse: placeholder-ck
+# invalid press state list
+invalid_press_state_list: ["idle", "allocated", "completing", "draining", "mixed"]
+
+# log match rules
+log_matching_rules:
+  keyword: "systemd-logind: INFO  Power key pressed."
+  take_effect_condition: all

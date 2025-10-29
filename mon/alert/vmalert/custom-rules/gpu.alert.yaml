@@ -1,0 +1,99 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-gpu.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-gpu.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-gpu
+      expr  : "1"
+
+    # gpu 掉卡
+    - alert: discoverd_gpu_card_dropout
+      # 可分配数 < 总卡数
+      expr: (8 - kube_node_status_allocatable{resource="nvidia_com_gpu"} > 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      #expr: ((kube_node_status_capacity{resource="nvidia_com_gpu"} - (kube_node_status_allocatable{resource="nvidia_com_gpu",node="gn001.hs1.local"})) > 0
+      for : 1m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 节点GPU异常
+        rename  : 发现掉卡现象
+      annotations:
+        summary: "节点: {{ $labels.node }} | 掉卡数量: {{ $value }}"
+
+    - alert: discoverd_custom_alert
+      expr: (DCGM_FI_DEV_PCIE_LINK_WIDTH != 16) unless on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}, "Hostname", "$1", "node", "(.*)")
+      for  : 1m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 节点GPU异常 
+        rename  : GPU PCIE 连接带宽异常
+      annotations:
+        summary: "节点: {{ $labels.Hostname }} | GPU: {{ $labels.gpu }} | 当前连接带宽: {{ $value }}x"
+
+    # deprecated, 请查看 gpu_man.alert.yaml
+    # # gpu xid 错误
+    # # 参考： https://www.volcengine.com/docs/6459/974350
+    # # 13:  通常是数组越界、指令错误，小概率是硬件问题。
+    # # 31:  通常是应用程序的非法地址访问，极小概率是驱动或者硬件问题。
+    # # 43:  通常是用户应用自身错误而非硬件问题。
+    # # 45:  通常是用户手动退出或者其他故障（硬件、资源限制等）导致 GPU 应用退出，Xid 45 只是一个结果，通常需要分析日志。
+    # # 68:  通常是硬件或驱动问题。
+    # - alert: discoverd_gpu_card_xid_errors
+    #   expr: DCGM_FI_DEV_XID_ERRORS > 0 unless (DCGM_FI_DEV_XID_ERRORS == 13) unless (DCGM_FI_DEV_XID_ERRORS == 31) unless (DCGM_FI_DEV_XID_ERRORS == 43) unless (DCGM_FI_DEV_XID_ERRORS == 45)
+    #   #expr: DCGM_FI_DEV_XID_ERRORS{Hostname="gn003.hs1.local",device="nvidia0"} + 1 > 0
+    #   for : 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU异常
+    #     rename  : 发现 GPU 出现 xid 错误
+    #   annotations:
+    #     summary: "节点: {{ $labels.Hostname }} | gpu: {{ $labels.gpu}} | Code: {{ $value }}"
+
+    - alert: discovered_gpu_card_xid_errors_special_attention
+      expr: >-
+        ((DCGM_FI_DEV_XID_ERRORS == 32 or
+          DCGM_FI_DEV_XID_ERRORS == 38 or
+          DCGM_FI_DEV_XID_ERRORS == 48 or
+          DCGM_FI_DEV_XID_ERRORS == 61 or
+          DCGM_FI_DEV_XID_ERRORS == 62 or
+          DCGM_FI_DEV_XID_ERRORS == 63 or
+          DCGM_FI_DEV_XID_ERRORS == 64 or
+          DCGM_FI_DEV_XID_ERRORS == 68 or
+          DCGM_FI_DEV_XID_ERRORS == 74 or
+          DCGM_FI_DEV_XID_ERRORS == 79 or
+          DCGM_FI_DEV_XID_ERRORS == 92 or
+          DCGM_FI_DEV_XID_ERRORS == 94 or
+          DCGM_FI_DEV_XID_ERRORS == 95 or
+          DCGM_FI_DEV_XID_ERRORS == 119 or
+          DCGM_FI_DEV_XID_ERRORS == 120 or
+          DCGM_FI_DEV_XID_ERRORS == 154)
+          and on(Hostname,pci_bus_id) special_attention_bus_id > 0)
+        unless on(Hostname)
+          label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}, "Hostname", "$1", "node", "(.*)")
+      for: 0s
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - 节点GPU出现 XID 错误
+        rename  : disable    
+      annotations:
+        summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**: {{ $labels.pci_bus_id }} | **Code**: {{ $value }}"
+
+    # - alert: discovered_gpu_card_xid_errors_special_attention
+    #   expr: >-
+    #     DCGM_FI_DEV_XID_ERRORS and on(Hostname,pci_bus_id) special_attention_bus_id 
+    #   for: 0s
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点GPU出现 XID 错误
+    #     rename  : disable    
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**: {{ $labels.pci_bus_id }} | **Code**: {{ $value }}"

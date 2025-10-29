@@ -1,0 +1,7 @@
+promethes:
+
+  qos_cn:
+    server: http://...:9090/
+
+  Tsinghua3_vm:
+    server: http://vmselect-vmc-vmstack.mon.svc.cluster.local.:8481/select/0/prometheus
