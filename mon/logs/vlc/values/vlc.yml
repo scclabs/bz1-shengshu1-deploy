@@ -1,0 +1,58 @@
+nameOverride: "vlc"
+
+vlselect:
+  enabled: true
+
+  replicaCount: 3
+
+  vmServiceScrape:
+    enabled: true
+
+
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+vlinsert:
+  enabled: true
+
+  replicaCount: 3
+
+  vmServiceScrape:
+    enabled: true
+
+
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+vlstorage:
+  enabled: true
+
+  replicaCount: 3
+
+  vmServiceScrape:
+    enabled: true
+
+  retentionPeriod: 90d
+
+  persistentVolume:
+    storageClassName: "shared-juice"
+    size: 2Ti
+
+
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
+      operator: Exists
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+
+vector:
+  enabled: false
