@@ -1,0 +1,113 @@
+config:
+  clients:
+    # - url: http://loki-gateway/loki/api/v1/push
+    - url: http://vlc-vlinsert:9481/insert/loki/api/v1/push?_msg_field=log,msg&_stream_fields=job,namespace,pod,instance,container,node_name,dev_id,dc,type,classify
+
+  snippets:
+    extraRelabelConfigs:
+      # 添加容器云 dev_id 标签 采集
+      - action: replace
+        source_labels:
+        - __meta_kubernetes_pod_label_pod_scclabs_dev_id
+        target_label: dev_id
+        regex: "(.*)"
+        replacement: "$1"
+      # 添加 dc 标签
+      - action: replace
+        target_label: dc
+        replacement: bz1-shengshu1
+      # 添加 type 标签
+      - action: replace
+        target_label: type
+        replacement: k8s
+      # 添加 日志分类 标签
+      - source_labels: [__path__]
+        target_label: classify
+        regex: ^/var/log/pods.*
+        replacement: pod
+      - source_labels: [__path__]
+        target_label: classify
+        regex: ^/var/lib/docker/containers.*
+        replacement: container
+
+    pipelineStages:
+    # 适配 k8s 格式
+    - cri: {}
+
+    # 1. 尝试解析 JSON 日志，提取 level 和 msg
+    - json:
+        expressions:
+          level: level
+          log: msg
+
+    # 2. 优先用 JSON 解析出的 level，否则用正则提取的 level
+    - labels:
+        level: level
+    - match:
+        selector: '{level=""}'
+        stages:
+          - regex:
+              expression: 'level[=: ]"?(?P<level>[a-zA-Z]+)"?'
+          - labels:
+              level: level
+
+    # 3. 如果 level 仍然为空，尝试从 log 字段猜测日志级别
+    - match:
+        selector: '{level=""}'
+        stages:
+          - regex:
+              expression: '(?i)(?P<guessed_level>fatal|panic|critical|crit|severe|emerg|alert|fail|failed|exception|error|err|warn|warning|caution|deprecated|info|information|event|status|success|ok|debug|dbg|fine|verbose|traceback|trace|finest|detail)'
+              # source: log
+          - replace:
+              source: guessed_level
+              expression: '(?i)(fatal|panic|critical|crit|severe|emerg|alert|fail|failed|exception|error|err)'
+              replace: 'error'
+          - replace:
+              source: guessed_level
+              expression: '(?i)(warn|warning|caution|deprecated)'
+              replace: 'warn'
+          - replace:
+              source: guessed_level
+              expression: '(?i)(info|information|event|status|success|ok)'
+              replace: 'info'
+          - replace:
+              source: guessed_level
+              expression: '(?i)(debug|dbg|fine|verbose|traceback)'
+              replace: 'debug'
+          - replace:
+              source: guessed_level
+              expression: '(?i)(trace|finest|detail)'
+              replace: 'trace'
+          - labels:
+              level: guessed_level
+          - labeldrop:
+              - guessed_level
+
+    # 5. 最后如果 level 还是空，设置为 unknown
+    - match:
+        selector: '{level=""}'
+        stages:
+          - static_labels:
+              level: "unknown"
+
+defaultVolumes:
+  - name: run
+    hostPath:
+      path: /run/promtail
+      type: DirectoryOrCreate
+  - name: containers
+    hostPath:
+      path: /var/lib/docker/containers
+  - name: pods
+    hostPath:
+      path: /var/log/pods
+
+defaultVolumeMounts:
+  - name: run
+    mountPath: /run/promtail
+  - name: containers
+    mountPath: /var/lib/docker/containers
+    readOnly: true
+  - name: pods
+    mountPath: /var/log/pods
+    readOnly: true
