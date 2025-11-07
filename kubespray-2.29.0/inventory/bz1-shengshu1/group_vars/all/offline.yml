@@ -10,6 +10,12 @@ files_repo: "https://file.mir.blsc.cn/kubespray/2.29.0"
 ### If using Ubuntu
 # ubuntu_repo: "http://myinternalubunturepo"
 
+# downloads cache
+# download_cache_dir: "../inventory/downloads_cache"
+# download_run_once: true
+# download_images_dir: null
+# download_localhost: true # need local have nerdctl
+
 ## Container Registry overrides
 kube_image_repo: "{{ registry_host }}/k8s.gcr.io"
 gcr_image_repo: "{{ registry_host }}/gcr.io"
