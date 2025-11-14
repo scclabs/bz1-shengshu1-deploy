@@ -1,0 +1,11 @@
+senders:
+  yanght:
+    smtp   : "smtp.qiye.163.com"
+    user   : "yanght@paratera.com"
+    license: "3qyfYn7YEakp7ELv"   # 到期时间 2022-01-11
+
+  qos:
+    smtp   : "smtp.qiye.163.com"  
+    user   : "qos@paratera.com"   # password：K8Fe5c329F909f09
+    license: "T9NeBg7abvL7kWjW"   # 到期时间 2022-01-12
+    

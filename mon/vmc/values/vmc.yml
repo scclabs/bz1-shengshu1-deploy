@@ -1,0 +1,314 @@
+
+nameOverride: "vmstack"
+
+victoria-metrics-operator:
+  enabled: true
+
+  replicaCount: 2
+
+  # watchNamespaces: [ {{ .Release.Namespace }} ]   # 只监控本 namespace 下的资源
+
+  admissionWebhooks:
+    # 默认 10y，注释掉就会重新生成，第一次部署需要重新生成
+    # 注：即使每次重新生成也是安全的，只不过会影响 diff 的查看
+    tls:
+      caCert: |
+        -----BEGIN CERTIFICATE-----
+        MIIDHjCCAgagAwIBAgIRAKU3cZSg7k0ZlychQ5td8AcwDQYJKoZIhvcNAQELBQAw
+        GTEXMBUGA1UEAxMOdm0tb3BlcmF0b3ItY2EwHhcNMjUwNjE5MTUyMDQyWhcNMzUw
+        NjE3MTUyMDQyWjAZMRcwFQYDVQQDEw52bS1vcGVyYXRvci1jYTCCASIwDQYJKoZI
+        hvcNAQEBBQADggEPADCCAQoCggEBANYVybpXxSkGMBPI2nydey2djqSJRqSgye4D
+        MZ2DSXZSZvAuPzL4B5qJZSr1YQtcSAQHBu/h+kF4qQltEUuPKWx3hXvzvFyPyLRY
+        0agzavjl81wZZxa3T1NWqhD5AuzA88dZ+nUHqtj2YCOYT8cuxWf5AjdGJ32tfs1E
+        ictAsNroKMzfesTKafmdfrAw/y8mSSMZUHZRcfDGunb+KsYmEhnKKWLN7xVJCOEh
+        tek5tce7ZNbb0MW9btFKzwRfC+4A+WxwWSyqUAX2ZKh72AgdLtJ7wA+vFOuoGiuw
+        lhIoK7PaLcuuf9ya6lrc0q3DrwtuHKBjts0WIqL12yJ/4JASJb0CAwEAAaNhMF8w
+        DgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAP
+        BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTrkC/zhV8/TKgSbZ3p7Qxdi9Eo6jAN
+        BgkqhkiG9w0BAQsFAAOCAQEAV0FjmIsaBaLSS5wjKveK4Tljjv+mLoGKqIsPWOw1
+        sJJiS28uMzAjVed6I8my4lU02S1BREwPtzm6H0orRU8mosZUvwdxyLpI5Uj/uytR
+        5hZc+1KQKbOORuj5hAzEDU6Phj9GvfI+IL0HgfLFfI4Y0ChgP4Ro5jUwbSJ8H6yD
+        N28rW2Pfq6GZvS9mnWpjupxHzvRCniRWYwFlCBVkS+vLrSPv38mf3DC8WvlU+F/O
+        uC5fUh+LD8NP0ndrAxUt5RgAGtQqB8uWVFzZddcGlfzJido0GFS0+JKQC6Mj3ITG
+        2xGeW/hXaO1O1IARstz0iWmaGbAPoEV3+YxEAw2Lq9J2Tg==
+        -----END CERTIFICATE-----
+      cert: |
+        -----BEGIN CERTIFICATE-----
+        MIIDuzCCAqOgAwIBAgIQa3Kn8jYT9fxhtDxKQEsg4TANBgkqhkiG9w0BAQsFADAZ
+        MRcwFQYDVQQDEw52bS1vcGVyYXRvci1jYTAeFw0yNTA2MTkxNTIwNDJaFw0zNTA2
+        MTcxNTIwNDJaMCgxJjAkBgNVBAMTHXZtYy12aWN0b3JpYS1tZXRyaWNzLW9wZXJh
+        dG9yMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7ewQltQbPnhtAeQO
+        dEMxSsA9d3VebL04f2T0Mq3Ph5S0g357lG/FQQCpfVtqeTLhLLawCRa2flnCC0fq
+        ScnnZsuPcSOcjKlNLKDvrbdYdTbmT3bkChJWdwhASpIoEkhYjJFFNzIKejr/h/gi
+        DyngJzxw5KAP63tsft4jL0OacvC52nKSwu6P/u1s/dDpl/RvH9QqdghaEgXZI8rA
+        D38nzGGSW6oYTeKIpoqOtk8LA5C+vl3FtkrtvAUiI6Hq2FwY1b94XfAReHlwf053
+        bc5UM22jRyWbDhxiqhYmhemYhrZ8Y5oA9naOb8kzAu5IFLhTm81Frdk5dyq0Cknw
+        nbfRjQIDAQABo4HvMIHsMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEF
+        BQcDAQYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBTrkC/zhV8/
+        TKgSbZ3p7Qxdi9Eo6jCBiwYDVR0RBIGDMIGAgiF2bWMtdmljdG9yaWEtbWV0cmlj
+        cy1vcGVyYXRvci5tb26CJXZtYy12aWN0b3JpYS1tZXRyaWNzLW9wZXJhdG9yLm1v
+        bi5zdmOCNHZtYy12aWN0b3JpYS1tZXRyaWNzLW9wZXJhdG9yLm1vbi5zdmMuY2x1
+        c3Rlci5sb2NhbC4wDQYJKoZIhvcNAQELBQADggEBAHe8WM1Ij+tBpmpu9fmPiYKl
+        a+7gcLXppWUstrILykN6MdAg3NaKgBx9Y2I6eW7nYzBKu+af8z137HNyibcJAew4
+        kWLrC+IgeuFlVEXZQjynKqauAO0nHqjHZjt7xXR9ZfTHrhBl87I41BArBHYoBN3Q
+        tDce/H7zdnlghwHP4zMb1ETteqMiRovc8k/fr8SdIZSUwoeuk8tGIq3czjqPWfFx
+        8qOSYNsua4/gHEbAAPe/jDeW9sXbXe1jPY3Xvd1OCe9AiyITlSIg055lVCyp4mdK
+        9t/FWWRDDHANeg7T6szxOz6YX9A50NbnXZP3vfxT1v9OXcKBcMETqXjafhc+VRA=
+        -----END CERTIFICATE-----
+      key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEA7ewQltQbPnhtAeQOdEMxSsA9d3VebL04f2T0Mq3Ph5S0g357
+        lG/FQQCpfVtqeTLhLLawCRa2flnCC0fqScnnZsuPcSOcjKlNLKDvrbdYdTbmT3bk
+        ChJWdwhASpIoEkhYjJFFNzIKejr/h/giDyngJzxw5KAP63tsft4jL0OacvC52nKS
+        wu6P/u1s/dDpl/RvH9QqdghaEgXZI8rAD38nzGGSW6oYTeKIpoqOtk8LA5C+vl3F
+        tkrtvAUiI6Hq2FwY1b94XfAReHlwf053bc5UM22jRyWbDhxiqhYmhemYhrZ8Y5oA
+        9naOb8kzAu5IFLhTm81Frdk5dyq0CknwnbfRjQIDAQABAoIBAQC3fCy3BVEVdm4q
+        3SRAiWlESsmcjQmLNsqRhNvHEcBQwWANYMgRi7lGDiqoII4WdiSuBR3xhHCtNK+v
+        X4DR80HgRvCSwnIDELYRyvPMtu8jRnmLoxbupYHFPrnGSL1ajCyuC4KjtJXb+hAD
+        Xlt18keKOtSdnMtqQb9EgDAGTU6ZgIxAK0WjV/J78Icgm6ASo5VY+3J+cZx3Rqbu
+        5+C+vI9U2gQix8Y27CLLVcHHVOFZQ17YJphEI1MPKNLr4AvScB/px6aOcLNDV//A
+        lz6aljFIVIYGRao5LkhaS8EsLinbwhtNAo25BP0jCfSwlmPIG3axliMf2/Z9eMpj
+        5zsBfJ0BAoGBAPp6d/c7ZVYW6nShSAX0M0aCjIlpgG2KQJoe6bK/ctiSQlVDbBX+
+        8gyCijNXNbsvQ5kEHO/HcOzWI1TftdoHsVpYdoa7JLZumIjUHLgfJm92aCPJ2zzj
+        OlvIRSFx1PxCoLPSq+xO7eqKRFyBgBOW5+yxeIeomzeE3G+ULOFYLW4hAoGBAPMq
+        vLFbXEJYZqK8QEXHk50HE1HH4M02pGxdMKLz5bP28SGTusw62XXfas82/Xh7JFUR
+        f05yunuATqZ5KVhAMMPEiGM3Et26WaQgtagUX3FsfMoQV4ZCLgai05CxanQUc/+9
+        V2u5voWbbmk6flH/iPMh0erbUWe3nXSwDMvNCz3tAoGAe41DdbFXqCJ/ne4cP8uY
+        K1SkC/f9gIrsmNlcv24OMWPb0oECZMswDBmsH+0JtP54YpcTyvbe7gQmw2viIN0g
+        j4cJWCYh0tc06HFwhSXgaKTIc7bTLPKMy886wmeK/q/C41Csu1CnrMRtOhAq4/7R
+        AgD8ijYR8k3YCjXV+YXsSuECgYBJZwI0q3ZrFJJO13KzXa5ifUtIqYRjjfYOPAc9
+        eVBChe1+DEEb+zu/iCSOznOvFcT+5NxACwPd2fpj6DkhyaauwbnF8U8BnYoHsFQF
+        m7i/3VbCDDLPdVS9bhNdHyEaTz5A2Z/1BcnMPQIUQ7Lz/6YQdooOUgv9ugCOw8Hp
+        F0kodQKBgQCg8swDNawGCrv9javDwWZ+eimZbv8JXIDmanDThMfED+G4/fOkob4/
+        YvmyN+57EPL9LrdCem2BbJ1TVc5e+BgNTesl3Cz7v1/u2KZWM0HVMKL3cinobWQM
+        vDLcf//zFy0auXHcLLyH9brmPwJT8t6oqwZMwwsnuhojBJFI/nlxQg==
+        -----END RSA PRIVATE KEY-----
+
+  operator:
+    disable_prometheus_converter: false   
+    useCustomConfigReloader: true         # 使用 operator 自带的 configmap 重载功能，可以提高时效性，并更符合预期
+
+
+vmcluster:
+  enabled: true
+
+  spec:
+    retentionPeriod: 1y
+
+    vmstorage:
+      extraArgs:
+        memory.allowedPercent: '50'
+      replicaCount: 6
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: shared-juice
+            resources:
+              requests:
+                storage: 1Ti
+      resources:
+        requests:
+          cpu: 4
+          memory: 32Gi
+        limits:
+          # cpu: 32
+          memory: 100Gi
+
+    vmselect:
+      extraArgs:
+        search.maxQueueDuration: 1m
+        search.maxQueryDuration: 5m
+        search.maxConcurrentRequests: '120'
+        search.maxSeries: '6000000'
+        # search.maxUniqueTimeseries: '6000000'
+        search.maxQueryLen: '163840'
+        search.maxWorkersPerQuery: '8'
+        # search.maxSamplesPerQuery: '3000000000'
+        memory.allowedPercent: '95'
+      replicaCount: 3
+      resources:
+        limits:
+          cpu: 8
+          memory: 16Gi
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: shared-juice
+            resources:
+              requests:
+                storage: 100Gi
+
+    vminsert:
+      extraArgs:
+        maxLabelsPerTimeseries: "1024"
+        memory.allowedPercent: '95'
+        maxInsertRequestSize: '104857600'
+      replicaCount: 3
+      resources:
+        limits:
+          cpu: 8
+          memory: 8Gi
+
+  ingress:
+    select:
+      enabled: true
+      annotations:
+        #cert-manager.io/cluster-issuer: zerossl-prod
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        # kubernetes.io/ingress.class: nginx
+      hosts:
+        - vmselect.shengshu1.bz1.paratera.com
+      tls:
+        - hosts:
+            - vmselect.shengshu1.bz1.paratera.com
+
+# https://docs.victoriametrics.com/operator/api/index.html#vmauthspec
+vmauth:
+  enabled: true
+
+  spec:
+    replicaCount: 3
+
+    unauthorizedUserAccessSpec:
+      url_map:
+      - src_paths:
+          - '/select/.*'
+        url_prefix:
+          - 'http://vmselect-vmstack.vmc1.svc.cluster.local.:8481/'
+      - src_paths:
+          - '/insert/.*'
+        url_prefix:
+          - 'http://vminsert-vmstack.vmc1.svc.cluster.local.:8480/'
+
+      # vmagent1 specific read
+      - src_paths:
+          - '/vmagent1/select/.*'
+        drop_src_path_prefix_parts: 2   # drop vmagent1 prefix
+        url_prefix:
+          - 'http://vmselect-vmstack.vmc1.svc.cluster.local.:8481/select/1000/prometheus/'
+
+
+      # vmagent2 specific
+      - src_paths:
+          - '/vmagent2/select/.*'
+        drop_src_path_prefix_parts: 2   # drop vmagent2 prefix
+        url_prefix:
+          - 'http://vmselect-vmstack.vmc1.svc.cluster.local.:8481/select/2000/prometheus/'
+      - src_paths:
+          - '/vmagent2/insert/.*'
+        drop_src_path_prefix_parts: 2   # drop vmagent2 prefix
+        url_prefix:
+          - 'http://vminsert-vmstack.vmc1.svc.cluster.local.:8480/insert/2000/prometheus/'
+
+vmagent:
+  enabled: true
+  spec:
+    resources:
+      requests:
+        cpu   : 100m
+        memory: 1Gi
+      limits:
+        cpu   : 12
+        memory: 8Gi
+    extraArgs:
+      promscrape.maxScrapeSize: "1677721600"
+
+# -- Create default rules for monitoring the cluster
+defaultRules:
+  create: true
+
+grafana:
+  enabled: true
+
+  # image:
+  #   tag: '10.4.18'
+
+  adminPassword: jds9hS-sj6Asj-18zmAl
+  persistence:
+    enabled: true
+    storageClassName: shared-juice
+    size: 100Gi
+  env:
+    GF_SERVER_ENABLE_GZIP: "true"
+    GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: "xsky-sds-app,xsky-sds-panel,xsky-sds-datasource"
+  ingress:
+    enabled: true
+    annotations:
+      #cert-manager.io/cluster-issuer: zerossl-prod
+      #nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      # kubernetes.io/ingress.class: nginx
+    hosts:
+      - g.shengshu1.bz1.paratera.com
+    tls:
+      - hosts:
+          - g.shengshu1.bz1.paratera.com
+        secretName: grafana-tls
+
+#  vmsingle 和 vmcluster 选一个就行
+vmsingle:
+  enabled: false
+
+alertmanager:
+  enabled: true
+  spec:
+    resources:
+      requests:
+        cpu   : 100m
+        memory: 2Gi
+      limits:
+        cpu   : 4
+        memory: 8Gi
+
+vmalert:
+  enabled: true
+  spec:
+    resources:
+      requests:
+        cpu   : 200m
+        memory: 2Gi
+      limits:
+        cpu   : 4
+        memory: 8Gi
+
+# 部署 node-exporter 并进行采集
+prometheus-node-exporter:
+  enabled: true
+
+# 部署 kube-state-metrics 并进行采集
+kube-state-metrics:
+  enabled: true
+  metricLabelsAllowlist:
+    - nodes=[node.kubernetes.io/cpu,nvidia.com/gpu,node-role.kubernetes.io/maintenance]
+    - pods=[*]
+
+# 采集 kubelet 相关指标
+kubelet:
+  enabled: true
+
+# 采集 kube-apiserver 相关指标
+kubeApiServer:
+  enabled: true
+
+# 采集 kube-controller-manager 相关指标
+kubeControllerManager:
+  enabled: true
+
+# 采集 kube-Dns 相关指标，默认 false
+kubeDns:
+  enabled: true
+
+# 采集 coreDns 相关指标
+coreDns:
+  enabled: true
+
+# 采集 kube-etcd 相关指标
+kubeEtcd:
+  enabled: true
+
+# 采集 kube-scheduler 相关指标
+kubeScheduler:
+  enabled: true
+
+# 采集 kube-proxy 相关指标，默认 false
+kubeProxy:
+  enabled: true

@@ -1,0 +1,72 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  env: prod
+  proj: alert
+  component: qostaskscheduler
+
+resources:
+- deployment.yaml
+- storage.yaml
+- service.yaml
+#- ingress.yaml
+
+namespace : mon
+
+configMapGenerator:
+- name: qostaskscheduler-config
+  files:
+  - config/databases.yml
+  - config/email_sender.yml
+  - config/inputers.yml
+  - config/recievers.yml
+  - config/resources.yml
+  - config/scheduals.yml
+  - config/service.yml
+- name: qostaskscheduler-config-alerters
+  files:
+  - config/alerters/logs_alerter.yml
+- name: qostaskscheduler-config-tasks
+  files:
+  - config/tasks/Tsinghua3_bad_gpu_card_report.yml
+
+  - config/tasks/calculate_accounts_mh_usage.yml
+  - config/tasks/cancel_jobs_by_comment.yml
+  - config/tasks/check_user_storage_current.yml
+  - config/tasks/cnode_rsc_health_status_exception_rollup.yml
+  - config/tasks/daily_duty_officer.yml
+  - config/tasks/dc_accounts_equal_ratio.yml
+  - config/tasks/dc_accounts_statistic.yml
+  - config/tasks/dc_accounts_update_to_db.yml
+  - config/tasks/device_unavaiable_time_analysic.yml
+  - config/tasks/ds_internal_svcs_online_check.yml
+  - config/tasks/failed_job_statistic.yml
+  - config/tasks/fnode_rsc_health_status_exception_rollup.yml
+  - config/tasks/get_excel_from_git_to_mysql.yml
+  - config/tasks/ib_network_speed_checked_deceleration.yml
+  - config/tasks/ib_query_service.yml
+  - config/tasks/ids_drain_node.yml
+  - config/tasks/invalid_power_key_pressed_report.yml
+  - config/tasks/kdump_mem_err_alert.yml
+  - config/tasks/node_benchmark_fail_node_stats.yml
+  - config/tasks/node_rsc_unhealth_data_to_db.yml
+  - config/tasks/over_boot_30d_nodes.yml
+  - config/tasks/power_key_pressed.yml
+  - config/tasks/send_logs_by_email.yml
+  - config/tasks/slurm_mysql_dump_status.yml
+  - config/tasks/statistic_mh.yml
+  - config/tasks/storage_check.yml
+  - config/tasks/storage_create_acc_limit_level.yml
+  - config/tasks/storage_jobs_gflops.yml
+  - config/tasks/storage_util_eval.yml
+  - config/tasks/users_sync.yml
+  - config/tasks/valid_pending_jobs.yml
+  - config/tasks/vip_queue_node_state.yml
+  - config/tasks/vip_queues_lifecycle.yml
+- name: qostaskscheduler-config-workers
+  files:
+  - config/workers/logs_analyzers.yml
+
+generatorOptions:
+  disableNameSuffixHash: true

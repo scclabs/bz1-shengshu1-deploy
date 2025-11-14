@@ -1,0 +1,51 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  name: qywx-qh3-4090-5090-rsc-mt-ids-alert
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+  namespace: vm
+spec:
+
+  route:
+    receiver: 'blackhole'
+    continue: true
+    matchers:
+    - alertname =~ "discovered_.*"
+    - retitle =~ ".*"
+    #- disable = "1"     # 静默先关的所有报警
+
+    routes:
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 6h
+      continue: false
+      matchers:
+      - alertname =~ "(discovered_gpu_card_xid_errors_special_attention)"
+      - retitle =~ "bz1-shenshu1 - (节点GPU出现 XID 错误)"
+      # - namespace !~ "prod"
+      - test = ""
+
+
+    - receiver: robot
+      matchers:
+      - alertname = "4781546152"
+
+    - receiver: robot-no-resolved
+      matchers:
+      - alertname = "4567453245"
+
+  receivers:
+  - name: 'robot'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/wx/robot?key=228f6402-128d-4b38-a86e-7d55c5905071"
+  - name: 'robot-no-resolved'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/wx/robot?key=228f6402-128d-4b38-a86e-7d55c5905071"
+      send_resolved: false
+  - name: 'blackhole'          # operator 会自动重命名，不建立在上面的顶层 receiver 无法使用
+

@@ -1,0 +1,9 @@
+node_fail_statistic:
+  
+  title     : "**NODE_FAIL** 作业节点统计报告"
+  prometheus: qos_cn
+  dcs       : []
+  mysql     : qos-mysql-jobs      # find it in config/databases.yml -> databases:
+  # end_time  : "09:00:00"
+
+

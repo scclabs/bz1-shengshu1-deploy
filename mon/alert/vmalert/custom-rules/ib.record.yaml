@@ -1,0 +1,26 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-ib-record
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-ib-record
+
+    rules:
+
+    # 为 node_infiniband_rate_bytes_per_second 附上 node 标签，依赖 kube-state-metrics 采集组件
+    # 后续应想其它方案为原始指标附上 node 标签
+    - record: re:node_infiniband_rate_bytes_per_second
+      expr  : label_replace(node_infiniband_rate_bytes_per_second, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)
+
+    # 为 node_infiniband_rate_bytes_per_second 附上 node 标签，依赖 kube-state-metrics 采集组件
+    # 后续应想其它方案为原始指标附上 node 标签
+    - record: re:node_infiniband_info
+      expr  : label_replace(node_infiniband_info, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)     
+
+    - record: re:node_infiniband_physical_state_id
+      expr  : label_replace(node_infiniband_physical_state_id, "internal_ip", "$1", "instance", "(.*):9100") + on(internal_ip) group_left(node) (kube_node_info * 0)

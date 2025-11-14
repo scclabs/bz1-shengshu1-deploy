@@ -1,0 +1,8 @@
+recievers:
+  # qos 测试群，机器人sion
+  qos_test_sion:
+    webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=b8088b27-2d41-4d12-be30-488d9236853d'
+    
+  # 清华3号4090-5090资源项目维护群 
+  Tsinghua3_4090_5090_resource_maintenance_IDS_Alert:
+    webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=228f6402-128d-4b38-a86e-7d55c5905071'

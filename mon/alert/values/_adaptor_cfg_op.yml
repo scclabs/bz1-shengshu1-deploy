@@ -1,0 +1,141 @@
+configFiles:
+  operators.yml:
+    job_suspender:
+      uri    : "/v1/worker/slurm/suspend_job"
+
+      dc_servers: {}
+        # BSCC-A : [ "http://BSCC-A:5500",  "b643a024cfbc082ece5af419b47b4e1b"]
+        # BSCC-A2: [ "http://BSCC-A2:5501", ""]
+        # BSCC-M : [ "http://BSCC-M:5500",  ""]
+        # BSCC-T : [ "http://BSCC-T:5500",  ""]
+        # CSTC-9 : [ "http://CSTC-9:5500",  ""]
+
+    k8s_operator:
+      config: "pod" # pod means using service account in pod
+      #config: "/home/qos/projects/microscope/qos_alert_webhook_adaptor/src/operators/k8s_operators/tests/scclabs_dev_admin"
+      enable: true
+      args_parsers:
+      - nodename: { Hostname: "(.*)" }
+
+      clients:
+        cordon:
+          matches_re:
+            Hostname: "gn.*"
+            status  : "firing"
+
+        # uncordon:
+        #   enable: false
+        #   matches_re:
+        #     Hostname: "gn.*"
+        #     status  : "resolved"
+
+    k8s_operator_v2:
+      config: "pod" # pod means using service account in pod
+      # config: "/root/.kube/my-kubeconfig.yaml"  # k8s集群连接配置，使用k8s部署qos_alert_adaptor时需要将配置文件挂载到容器内部
+      enable: true
+      args_parsers:
+      - nodename: { Hostname: "(.*)" }
+
+      clients:
+        cordon:
+          matches_re:
+            Hostname: ".*"
+            status  : "firing"
+
+        uncordon:
+          enable: false
+          matches_re:
+            Hostname: "gn.*"
+            status: "resolved"
+
+    job_controller:
+      # 支持的操作，不同的操作可能涉及到不同的 uri 接口， 可在 config.yml 中通过 operator_args.oprt 设置
+      # 当 qos_pn_executor 中支持新的操作时，在下面添加即可
+      oprts:     
+        suspend: "/v1/worker/slurm/suspend_job"
+        cancel: "/v1/exectuor/slurm/cancel_job"
+      token: "b643a024cfbc082ece5af419b47b4e1b"
+      args_parsers:
+      - jobid: { jobid: "(.*)"}
+        user : { user : "(.*)"}
+
+      dc_servers:
+        BSCC-A:
+          server: http://BSCC-A:5500
+          matches_re:                 # 这里用于匹配，value 可以为 regex
+            dc      : "^BSCC-A$"
+
+
+    process_killer:
+      uri       :  "/v1/exectuor/node_manager/suspend_proc"
+      operate   : suspend     # kill or suspend
+      cpu_threshold: 20
+      white_list:
+        procnames   : [ make, ld, 
+                        icc, ifort, icpc, gcc, gfortran, mpifort, mpif90, mpiicc, mpiicpc, mpiifort, mpicxx, g++, cran, perl, pip, conda, mysqld,
+                        cp, scp, rsync, mv,
+                        tar, gzip, zip, unzip, rar, 7z, fortcom, mcpcom]
+        usernames   : ["root"]
+        pids        : []
+        procnames_re: ["ba.*", ".*node_exporter.*", ".*prometheus.*", ".*fortcom", "ssc-cli-linux"]
+        usernames_re: []
+        pids_re     : []
+      limited_usernames_re : ["^sc.*", "^pg.*", "^a6s.*"]   # 限定用户列表, 若设置了此列表(不为空)，在对进程进行白名单过滤后，将只对匹配此列表的用户进行相关操作
+        
+      dc_servers: {}
+        # BSCC-A:
+        #   labels:                 # 这里用于匹配，value 可以为 regex
+        #     dc      : "^BSCC-A$"
+        #     instance: "ln2[345678].*|ln41.*"
+        #   hosts_parser:           # 这里用于配置从指定的label获取 hosts，可以配置多个, 若不配置，需要从 传入的 metrics.__hosts 设置节点列表
+        #   - instance: "(.*):9100"
+        #   server: "http://BSCC-A:5500"
+        #   token : "b643a024cfbc082ece5af419b47b4e1b"
+        #   #test         : True           # 测试模式下，并不进行实际的挂起或杀进程操作
+        #   #cpu_threshold: 20             # 对高于此cpu使用率的进程进行查杀
+        #   white_list   :
+        #     usernames: [root, sc57245]        # sc57245 为 IE-26526 需求添加
+        #     inherit : true      # 设置后将继承 默认的配置
+        #   limited_usernames_re: ["^sc.*", "^pg.*", "^a0s.*", "^bio0.*"]
+
+    node_controller:
+      # 支持的操作，不同的操作可能涉及到不同的 uri 接口， 可在 config.yml 中通过 operator_args.oprt 设置
+      # 当 qos_pn_executor 中支持新的操作时，在下面添加即可
+      oprts:     
+        drained: "/ss/node/BJ-SS1/drain"
+      server: "http://svc.qos.paratera.com"
+      token: "b643a024cfbc082ece5af419b47b4e1b"
+      args_parsers:
+      - node : { node : "(.*)"}
+
+      dc_servers: {}
+        # BSCC-A:
+        #   oprts:
+        #     drained: "/ss/node/BSCC-A/drain"
+        #     storage_mount: "/ss/node_manager/BSCC-A/storage_mount"
+        #   matches_re:                 # 这里用于匹配，value 可以为 regex
+        #     dc      : "^BSCC-A$"
+
+
+    snode_failover:
+
+      server: "http://svc.qos.paratera.com:8080"
+      uri   : "/v1/exectuor/node_manager/s_reset_partner"
+      token : "b643a024cfbc082ece5af419b47b4e1b"
+      limit : 1h
+      args_parsers:
+      - node : { node  : "(.*)"}
+        pnode: { pnode : "(.*)"}
+        dc   : { dc    : "(.*)"}
+
+      dc_servers: {}
+        # BSCC-A:
+        #   server    : http://bscca:5500
+        #   uri       : "/v1/exectuor/node_manager/s_reset_partner"
+        #   matches_re:                 # 这里用于匹配，value 可以为 regex
+        #     dc      : "^BSCC-A$"
+        #     node    : "oss.*"
+
+
+
+

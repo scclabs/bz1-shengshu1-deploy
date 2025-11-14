@@ -1,0 +1,35 @@
+.options: &options
+  # if set, upgrade process rolls back changes made in case of failed upgrade. 
+  atomic: false
+  # the wait will be set automatically if atomic is true
+  wait: false
+  # time to wait for any individual Kubernetes operation .
+  timeout: 300s
+  # limit the maximum number of revisions saved per release.
+  max_history: 3
+  # create the release namespace if not present.
+  create_namespace: true
+  pending_release_strategy: rollback
+
+# repositories:
+#   - name: vm
+#     url: https://victoriametrics.github.io/helm-charts/
+
+releases:
+- name: vmc
+  <<: *options
+  chart:
+    name: ./charts/victoria-metrics-k8s-stack-0.52.0.tgz
+  namespace: mon
+  tags: ["vmc"]
+  values:
+  - ./values/_vmc.yml
+  - ./values/vmc-custom-rules.yml
+  - ./values/vmc.yml
+
+- name: prom-crd
+  <<: *options
+  chart:
+    name: ./charts/prometheus-operator-crds-21.0.0.tgz
+  namespace: mon
+  tags: ["prom-crd"]

@@ -1,0 +1,31 @@
+
+cert-exporter:
+  enabled: false
+
+  dashboards:
+    # Labels to add to all dashboard ConfigMaps
+    additionalLabels:
+      grafana_dashboard: "1"
+    certManagerDashboard:
+      create: true
+
+prometheus-blackbox-exporter:
+  enabled: false
+
+x509-certificate-exporter:
+  enabled: false
+
+  secretsExporter:
+    enabled: false
+
+  service:
+    create: false
+
+  prometheusServiceMonitor:
+    create: false
+  
+  prometheusPodMonitor:
+    create: false
+
+  prometheusRules:
+    create: false

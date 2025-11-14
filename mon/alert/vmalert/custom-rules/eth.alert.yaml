@@ -1,0 +1,52 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-eth.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-eth.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-eth
+      expr  : "1"
+
+    # # 报警：节点 以太网 降速（gpu节点）
+    # - alert: discoverd_eth_speed_down
+    #   expr : re:node_network_speed_bytes{device=~"cni0"} * 8 / 1000000000 != 10
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 以太网 降速
+    #     rename  : disable
+    #     #test    : "1"
+    #   annotations:
+    #     summary: "节点: <font color=\"purple\">{{ $labels.node }}</font> | 设备: <font color=\"orange\">{{ $labels.device }}</font> | 期望速度: <font color=\"green\">10</font> | 报警速度：<font color=\"red\">{{ $value }}</font>"
+
+    # - alert: discoverd_eth_speed_down
+    #   expr : re:node_network_speed_bytes{device=~"ens13f0np0|ens13f1np1"} * 8 / 1000000000 != 25
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 以太网 降速
+    #     rename  : disable
+    #     #test    : "1"
+    #   annotations:
+    #     summary: "节点: <font color=\"purple\">{{ $labels.node }}</font> | 设备: <font color=\"orange\">{{ $labels.device }}</font> | 期望速度: <font color=\"green\">25</font> | 报警速度：<font color=\"red\">{{ $value }}</font>"
+
+    # - alert: discoverd_eth_speed_down
+    #   expr : re:node_network_speed_bytes{device=~"eth0|flannel.1"} * 8 / 1000000000 != 50
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 以太网 降速
+    #     rename  : disable
+    #     #test    : "1"
+    #   annotations:
+    #     summary: "节点: <font color=\"purple\">{{ $labels.node }}</font> | 设备: <font color=\"orange\">{{ $labels.device }}</font> | 期望速度: <font color=\"green\">50</font> | 报警速度：<font color=\"red\">{{ $value }}</font>"
+

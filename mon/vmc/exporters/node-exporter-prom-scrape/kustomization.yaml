@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mon
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/name: node-exporter
+      app.kubernetes.io/instance: prom-metrics
+      managed-by: kustomize
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - static-scrape.yaml
+
+configMapGenerator:
+  - name: node-exporter-prom-metrics
+    files:
+      - prom-metrics/dcgm_dev_hw_peak.prom
+      - prom-metrics/special_attention_bus_id.prom
+
+generatorOptions:
+  disableNameSuffixHash: true

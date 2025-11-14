@@ -1,0 +1,9 @@
+dependencies:
+- name: prometheus-blackbox-exporter
+  repository: ""
+  version: 9.0.1
+- name: x509-certificate-exporter
+  repository: ""
+  version: 3.15.0
+digest: sha256:a4187e29d7d55344f44e9139a16ec452485e915b65c841c27c9b21059f373c92
+generated: "2025-05-22T20:55:37.842861+08:00"

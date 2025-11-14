@@ -1,0 +1,109 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-ib-test.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-ib-test.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-ib-test
+      expr  : "1"
+
+    # # 检测不到 IB 卡
+    # - alert: discoverd_ib_card_not_recognized
+    #   expr: re:up{instance=~".*:9100"}==1 unless on (instance) re:node_infiniband_info{node!="gn004.hs5h.local"} unless on (instance) re:node_infiniband_rate_bytes_per_second{node!="gn004.hs5h.local"}
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点检测不到 IB 卡
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} "
+
+    # # IB 掉卡 deprecated
+    # - alert: discoverd_ib_card_dropout
+    #   expr: re:node_infiniband_info{device!~".*bond.*"} offset 5m and on (instance) up{instance="10.252.2.7:9100"}==1 unless on(instance, device) re:node_infiniband_info{device!~".*bond.*",device!="mlx5_1"}
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点IB异常
+    #     rename  : 发现掉卡现象
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 掉卡设备: {{ $labels.device }}"
+
+    # # IB 掉卡v2
+    # - alert: discoverd_ib_card_dropout
+    #   expr : count(re:node_infiniband_info{node=~"gn001.*"}) by (node) - 1 != 9
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB 卡数量异常
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 期望数量: 9 | 报警数量: {{ $value }}"
+
+    # IB 掉卡v3
+
+    # # ib 降速
+    # # node_infiniband_rate_bytes_per_second{instance=~"10.252.2.(7|8|9|10):9100",device!~".*_bond_.*"} * 8 / 1000000000 != 200
+    # # node_network_speed_bytes{device=~"ib.*"} * 8 / 1000000000 = 200
+    # # node_network_speed_bytes{device=~"ens47.*"} * 8 / 1000000000 = 100
+    # # node_infiniband_rate_bytes_per_second{instance=~"10.252.2.(7|8|9|10):9100"}
+    # - alert: discoverd_ib_speed_down
+    #   expr: re:node_infiniband_rate_bytes_per_second{node=~"gn.*",device!~".*bond.*", node="gn002.hs1.local", device=~"mlx5_[04]"} * 8 / 1000000000 - 40 != 200
+    #   for : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点IB卡降速
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望速度: 200 | 报警速度：{{ $value }}"
+
+    # # ib 链接异常
+    # # (0: no change, 1: sleep,2: polling, 3: disable, 4: shift, 5: link up, 6: link error recover,7: phytest)
+    # - alert: discoverd_ib_link_error
+    #   expr : (re:node_infiniband_physical_state_id{node=~"(mn|cn).*",device="mlx5_1"}) != 5
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB 链接异常
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "节点: {{ $labels.node }} | 设备: {{ $labels.device }} | 期望状态: 5(link up) | 报警状态：{{ $value }}"
+
+    # # ib 设备温度过高
+    # - alert: discoverd_ib_device_temp_too_high
+    #   expr : qos_ib_node_temp{type="1",desc=~"gn.*"} > 70
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB 卡温度过高
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "设备: {{ $labels.desc }} | 期望温度: <= 70 | 报警温度：{{ $value }}"
+
+    # - alert: discoverd_ib_device_temp_too_high
+    #   expr : qos_ib_cable_temp{type="1", desc=~"gn.*"} > 58
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点 IB 线设备温度过高
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "设备: {{ $labels.desc }} <--> {{ $labels.nodeguid }}:{{ $labels.port2 }} | 期望温度: <= 58 | 报警温度：{{ $value }}"
+
+

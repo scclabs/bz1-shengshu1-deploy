@@ -1,0 +1,12 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMStaticScrape
+metadata:
+  name: node-exporter-prom-scrape
+  namespace: mon
+spec:
+  jobName: node-exporter-prom
+  targetEndpoints:
+    - targets:
+        - "node-exporter-prom-scrape:9100"
+      interval: 15s
+      scrapeTimeout: 10s

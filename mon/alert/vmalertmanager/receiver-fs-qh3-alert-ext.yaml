@@ -1,0 +1,155 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  name: vm-alertmanager-receiver-fs-qh3-alert-ext
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+  namespace: vm
+spec:
+
+  route:
+    receiver: 'blackhole'
+    continue: true
+    matchers:
+    - alertname =~ "(discoverd|discovered)_.*"
+    - retitle =~ ".*"
+    #- disable = "1"     # 静默相关的所有报警
+
+    routes:
+
+    # - receiver: 'robot'
+    #   group_by: ['...']
+    #   group_wait: 10s
+    #   group_interval: 20s
+    #   repeat_interval: 1h
+    #   continue: false
+    #   matchers:
+    #   - alertname =~ "(discoverd_custom_alert)"
+    #   - retitle =~ "pod 状态异常|pod container 状态异常|pod container 持续重启"
+    #   - namespace =~ "prod"
+    #   - test = ""
+
+    # - receiver: 'robot-no-resolved'
+    #   group_by: ['...']
+    #   group_wait: 10s
+    #   group_interval: 20s
+    #   repeat_interval: 1h
+    #   continue: false
+    #   matchers:
+    #   - alertname =~ "(discoverd_custom_alert_no_resolved)"
+    #   - retitle =~ "pod 异常退出"
+    #   - namespace =~ "prod"
+    #   - test = ""
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 6h
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - retitle =~ "bz1-shenshu1 - (发现节点状态异常|节点GPU异常|pod 长时间 Terminating)"
+      - test = ""
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 6h
+      continue: false
+      matchers:
+      - alertname =~ "discoverd_gpu_card_dropout"
+      - test = ""
+
+    # - receiver: 'robot'
+    #   group_by: ['...']
+    #   group_wait: 10s
+    #   group_interval: 20s
+    #   repeat_interval: 6h
+    #   continue: false
+    #   matchers:
+    #   - alertname =~ "(discoverd_ib_card_not_recognized|discoverd_ib_card_dropout|discoverd_ib_speed_down|discoverd_ib_link_error)"
+    #   - test = ""
+
+    # - receiver: 'robot'
+    #   group_by: ['...']
+    #   group_wait: 10s
+    #   group_interval: 20s
+    #   repeat_interval: 6h
+    #   continue: false
+    #   matchers:
+    #   - alertname =~ "(discoverd_eth_speed_down)"
+    #   - test = ""
+
+    # - receiver: 'robot'
+    #   group_by: ['...']
+    #   group_wait: 10s
+    #   group_interval: 20s
+    #   repeat_interval: 6h
+    #   continue: false
+    #   matchers:
+    #   - alertname =~ "(discoverd_ib_device_temp_too_high)"
+    #   - test = ""
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 6h
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_xid_errors_man|discoverd_gpu_card_xid_errors)"
+      - test = ""
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 6h
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_node_rootfs_usage_too_high)"
+      - test = ""
+
+    # - receiver: 'robot'
+    #   group_by: ['...']
+    #   group_wait: 10s
+    #   group_interval: 20s
+    #   repeat_interval: 6h
+    #   continue: false
+    #   matchers:
+    #   - alertname =~ "(discoverd_gpu_card_xid_errors_man)"
+    #   - test = "fs-mb-prod"
+
+    - receiver: 'robot-no-resolved'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 6h
+      continue: false
+      matchers:
+      - alertname =~ "(discovered_gpu_card_error_log)"
+      - retitle =~ "bz1-shenshu1 - (发现GPU异常日志)"
+      - test = ""
+
+    - receiver: robot
+      matchers:
+      - alertname = "4781546152"
+
+    - receiver: robot-no-resolved
+      matchers:
+      - alertname = "4567453245"
+
+  receivers:
+  # 飞书：生数科技 并行报警群（外部）
+  - name: 'robot'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=7b87b62a-9199-4933-b2cb-b4e074d4b26f"
+  - name: 'robot-no-resolved'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=7b87b62a-9199-4933-b2cb-b4e074d4b26f"
+      send_resolved: false
+  - name: 'blackhole'             # operator 会自动重命名，不建立在上面的顶层 receiver 无法使用
+

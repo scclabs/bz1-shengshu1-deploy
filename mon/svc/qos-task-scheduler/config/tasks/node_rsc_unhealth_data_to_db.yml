@@ -1,0 +1,4 @@
+node_rsc_unhealth_data_to_db:
+    prometheus: qos_cn
+    mysql: placeholder-mysql
+    mysql_table: node_rsc_unhealth_alert_info

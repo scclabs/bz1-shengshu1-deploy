@@ -1,0 +1,35 @@
+dbservers:
+  qos-mysql:
+    engine: mysql
+    host  : qos10
+    port  : 3316
+
+  placeholder-mysql:
+    engine: mysql
+    host  : "..."
+    port  : 3316
+
+  placeholder-ck:
+    engine: clickhouse
+    host  : "..."
+    port  : 9000
+    user  : "..."
+    passwd: "..."
+
+databases:
+
+  qos-mysql-jobs:
+    server: qos-mysql
+    user  : "..."
+    passwd: "..."
+    db    : jobs
+
+  placeholder-mysql:
+    server: placeholder-mysql
+    user  : "..."
+    passwd: "..."
+    db    : jobs
+
+  placeholder-ck:
+    server: placeholder-ck
+    db    : jobs  

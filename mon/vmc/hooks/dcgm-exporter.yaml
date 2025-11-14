@@ -1,0 +1,15 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: dcgm-exporter
+  namespace: mon
+spec:
+  namespaceSelector:
+    matchNames:
+    - gpu-operator
+  selector:
+    matchLabels:
+      app: gpu-operator  # 匹配标签，匹配正确才进行拉取，需根据实际集群内的配置决定，可以通过sre确认
+  endpoints:
+  - port: gpu-metrics
+    interval: 1s

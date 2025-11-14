@@ -1,0 +1,7 @@
+ds_internal_svcs_online_check:
+  mysql     : placeholder-mysql
+
+  tables : { 
+            'internal_svcs'    : "qms_dim_meta_svcs",
+            'svcs_online_info' : "qms_dws_ds_internal_service_online_everyday"
+            }

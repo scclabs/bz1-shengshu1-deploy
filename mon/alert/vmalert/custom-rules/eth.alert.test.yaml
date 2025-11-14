@@ -1,0 +1,28 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-eth-test.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-eth-test.rules
+    #interval: 15s
+    rules:
+
+    - record: rule:vm-alert-custom-rules-eth
+      expr  : "1"
+
+    # #以太网： 降速
+    # - alert: discoverd_eth_speed_down
+    #   expr : re:node_network_speed_bytes{device="eth0",node="gn004.hs5h.local"} * 8 / 1000000000 - 20 != 50
+    #   for  : 1m
+    #   labels:
+    #     severity: critical
+    #     retitle : bz1-shenshu1 - 节点以太网卡降速
+    #     rename  : disable
+    #     test    : "1"
+    #   annotations:
+    #     summary: "**节点**: {{ $labels.node }} | **设备**: {{ $labels.device }} | **期望速度**: <font color=\"green\">50</font> | **报警速度**: <font color=\"red\">{{ $value }}</font>"

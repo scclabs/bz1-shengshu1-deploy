@@ -23,7 +23,7 @@ spec:
                     values:
                     - gn001
           containers:
-            - image: cr.hs1h-int.paratera.com/tests/nccl-tests:12.8.1-devel-ubuntu22.04-nccl2.27.7-1-2c1d5fe
+            - image: cr.shengshu1.bz1.paratera.com/tests/nccl-tests:12.9.1-devel-ubuntu22.04-nccl2.28.3-1-cc736c1
               imagePullPolicy: Always
               name: nccl
               env:
@@ -82,7 +82,7 @@ spec:
                     values:
                     - gn001
           containers:
-            - image: cr.hs1h-int.paratera.com/tests/nccl-tests:12.8.1-devel-ubuntu22.04-nccl2.27.7-1-2c1d5fe
+            - image: cr.shengshu1.bz1.paratera.com/tests/nccl-tests:12.9.1-devel-ubuntu22.04-nccl2.28.3-1-cc736c1
               imagePullPolicy: Always
               name: nccl
               resources:

@@ -1,0 +1,107 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  name: vm-alertmanager-receiver-fs-ids-test
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+  namespace: vm
+spec:
+
+  route:
+    receiver: 'blackhole'
+    continue: true
+    matchers: 
+    - alertname =~ "discoverd_.*"
+    - retitle =~ ".*"
+    - test =~ "1|fs-ids-test"
+
+    routes:
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 1h
+      continue: false
+      matchers:
+      - alertname =~ "discoverd_gpu_card_dropout|discoverd_gpu_card_xid_errors"
+      - test = "1"
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 1h
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_xid_errors_man_test)"
+      - test = "fs-ids-test"
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 2m
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_ib_card_not_recognized|discoverd_ib_card_dropout|discoverd_ib_speed_down|discoverd_ib_link_error)"
+      - test = "1"
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 2m
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_eth_speed_down)"
+      - test = "1"
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 2m
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_ib_device_temp_too_high)"
+      - test = "1"
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 2m
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_node_rootfs_usage_too_high)"
+      - test = "1"
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 2m
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_custom_alert)"
+      - test = "1"
+      
+    - receiver: 'robot'
+      matchers:
+      - alertname = "4781546152"
+
+  receivers:
+  # 飞书临时群: DS_Alert
+  - name: 'robot'  # operator 会自动重命名
+    webhook_configs:
+    # 群：IDE测试群  机器人：DS_Alert
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=5bcaab7d-3897-4a7d-90a8-d5e192481ef3"
+  - name: 'robot-no-resolved'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=5bcaab7d-3897-4a7d-90a8-d5e192481ef3"
+      send_resolved: false
+  - name: 'blackhole'             # operator 会自动重命名，不建立在上面的顶层 receiver 无法使用
+
+

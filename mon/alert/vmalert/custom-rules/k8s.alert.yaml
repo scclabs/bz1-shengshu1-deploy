@@ -1,0 +1,105 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vm-alert-custom-rules-k8.rules
+  namespace: vm
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+spec:
+  groups:
+  - name: custom-rules-k8s.rules
+    #interval: 15s
+    rules:
+
+    # 占位
+    - record: rule:vm-alert-custom-rules-k8s
+      expr  : "1"
+
+    # # 报警：pod Pending 时间过长
+    # # - 仅针对 harbor|vm 命名空间
+    # - alert: discoverd_custom_alert
+    #   expr: kube_pod_status_phase{namespace=~"harbor|vm",phase="Pending"} == 1 
+    #   for : 2m
+    #   labels:
+    #     severity: critical
+    #     retitle : pod Pending 时间过长
+    #     rename  : disable
+    #   annotations:
+    #     summary: "命名空间: {{ $labels.namespace }} | pod: {{ $labels.pod }} | 状态: {{ $labels.phase }}"
+
+    # 报警：pod 异常退出
+    - alert: discoverd_custom_alert_no_resolved
+      expr: (kube_pod_container_status_terminated_reason{namespace!~"default",reason!="Completed"} == 1) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for : 0m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - pod 异常退出
+        rename  : disable
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+      annotations:
+        summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 原因: <font color=\"red\">{{ $labels.reason }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+
+    # 报警：pod 状态异常
+    - alert: discoverd_custom_alert
+      expr: >-
+        ((kube_pod_status_phase{namespace!~"default|prod",phase!~"Running|Pending|Succeeded"} > 0) and on (pod, namespace) (time() - kube_pod_start_time) > 300) 
+        + on(namespace,pod) group_left(node) (kube_pod_info * 0)
+        unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for : 2m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - pod 状态异常
+        rename  : disable
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+      annotations:
+        summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 状态: <font color=\"red\">{{ $labels.phase }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+
+    # 报警：pod container 状态异常
+    - alert: discoverd_custom_alert
+      expr: >-
+        (kube_pod_container_status_waiting_reason{namespace!~"default|prod",reason!~"ContainerCreating|PodInitializing"} == 1 or kube_pod_container_status_waiting_reason{namespace!~"default",reason!~"ContainerCreating|PodInitializing"} offset 30s == 1) 
+        + on(namespace,pod) group_left(node) (kube_pod_info * 0)
+        unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for : 3m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - pod container 状态异常
+        rename  : disable
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+      annotations:
+        summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 容器: <font color=\"blue\">{{ $labels.container }}</font> | 原因: <font color=\"red\">{{ $labels.reason }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+
+    # 报警：pod container 持续重启
+    - alert: discoverd_custom_alert
+      expr: >-
+        (kube_pod_container_status_restarts_total{namespace!~"default"} > 2 and (increase(kube_pod_container_status_restarts_total[6m]) > 0 or increase(kube_pod_container_status_restarts_total[6m]) offset 1m > 0 ))
+        + on(namespace,pod) group_left(node) (kube_pod_info * 0)
+        unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      for : 2m
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - pod container 持续重启
+        rename  : disable
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+      annotations:
+        summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 容器: <font color=\"blue\">{{ $labels.container }}</font>  | 重启次数: <font color=\"red\">{{ $value }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+
+    # 报警：pod 
+    - alert: discoverd_custom_alert
+      expr: >-
+        ((time() - kube_pod_deletion_timestamp{namespace!~"default"}) > 600) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      # expr: (((time() - kube_pod_deletion_timestamp{namespace!~"default"}) > 600) + on(namespace,pod) group_left(node) (kube_pod_info * 0)) offset 1h
+      for : 0s
+      labels:
+        severity: critical
+        retitle : bz1-shenshu1 - pod 长时间 Terminating
+        rename  : disable
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+      annotations:
+        summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 容器: <font color=\"blue\">{{ $labels.container }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
+        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢

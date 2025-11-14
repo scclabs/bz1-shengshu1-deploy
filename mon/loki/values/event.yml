@@ -1,0 +1,37 @@
+config:
+  route:
+    routes:
+      - match:
+          - receiver: "loki"
+  receivers:
+  - name: "loki"
+    loki:
+      headers: # optional
+        X-Scope-OrgID: 0
+        Content-Type: application/json
+      streamLabels:
+        classify: k8s-event
+        service_name: k8s-event
+      url: http://loki-gateway/loki/api/v1/push
+      layout:
+        namespace: '{{ "{{ .Namespace }}" }}'
+        host     : '{{ "{{ .Source.Host }}" }}'
+        component: '{{ "{{ .Source.Component }}" }}'
+          
+        type     : '{{ "{{ .Type }}" }}'
+        reason   : '{{ "{{ .Reason }}" }}'
+        
+        kind     : '{{ "{{ .InvolvedObject.Kind }}" }}'
+        name     : '{{ "{{ .InvolvedObject.Name }}" }}'
+        uid      : '{{ "{{ .InvolvedObject.UID }}" }}'
+        apiVersion: '{{ "{{ .InvolvedObject.APIVersion }}" }}'
+        resourceVersion : '{{ "{{ .InvolvedObject.ResourceVersion }}" }}'
+        fieldPath: '{{ "{{ .InvolvedObject.FieldPath }}" }}'
+        ownerReferences: '{{ "{{ toJson .InvolvedObject.OwnerReferences }}" }}'
+        deleted   : '{{ "{{ .InvolvedObject.Deleted }}" }}'
+
+        timestamps: '{{ "{{ .FirstTimestamp.Unix }}" }}'
+        timestr   : '{{ "{{ .FirstTimestamp.Format \"2006-01-02 15:04:05\" }}" }}'
+        message   : '{{ "{{ .Message }}" }}'
+        labels    : '{{ "{{ toJson .InvolvedObject.Labels}}" }}'
+        count     : '{{ "{{ .Count }}" }}'

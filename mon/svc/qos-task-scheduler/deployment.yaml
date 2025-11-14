@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ds-alert-qostaskscheduler
+  labels:
+    app: ds-alert-qostaskscheduler
+    version: v1
+spec:
+  replicas: 1
+  serviceName: ds-alert-qostaskscheduler
+  selector:
+    matchLabels:
+      app: ds-alert-qostaskscheduler
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ds-alert-qostaskscheduler
+        version: v1
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      containers:
+        - name: ds-alert-qostaskscheduler
+          image: registry.cn-beijing.aliyuncs.com/prtr/qos_task_scheduler:1.1.137
+          ports:
+            - containerPort: 5210
+              name: http
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: config-alerters
+              mountPath: /app/config/alerters
+            - name: config-tasks
+              mountPath: /app/config/tasks
+            - name: config-workers
+              mountPath: /app/config/workers
+            - name: data-var
+              mountPath: /app/var
+            - name: data-cache
+              mountPath: /app/cache
+      volumes:
+        - name: config
+          configMap:
+            name: qostaskscheduler-config
+        - name: config-alerters
+          configMap:
+            name: qostaskscheduler-config-alerters
+        - name: config-tasks
+          configMap:
+            name: qostaskscheduler-config-tasks
+        - name: config-workers
+          configMap:
+            name: qostaskscheduler-config-workers
+        - name: data-var
+          emptyDir: null
+          persistentVolumeClaim:
+            claimName: qostaskscheduler-var
+        - name: data-cache
+          emptyDir: null
+          persistentVolumeClaim:
+            claimName: qostaskscheduler-cache
+
+      imagePullSecrets:                            # 使用的secret
+      # - name: harbor-od-qos-registry
+      - name: aliyun-yht-private

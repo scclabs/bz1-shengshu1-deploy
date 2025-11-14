@@ -1,0 +1,82 @@
+image:
+  ## @param image.registry [default: REGISTRY_NAME] Container image registry
+  ## @param image.repository [default: REPOSITORY_NAME/kubernetes-event-exporter] Container image name
+  ## @skip image.tag Container image tag
+  ## @param image.digest Container image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+  ## @param image.pullPolicy Container image pull policy
+  ## @param image.pullSecrets Specify docker-registry secret names as an array
+  ##
+  registry: docker.io
+  repository: bitnamilegacy/kubernetes-event-exporter
+  tag: 1.7.0-debian-12-r46
+
+config:
+  route:
+    routes:
+      - match:
+          - receiver: "vlc"
+  receivers:
+  - name: "loki"
+    loki:
+      headers: # optional
+        X-Scope-OrgID: 0
+        Content-Type: application/json
+      streamLabels:
+        classify: k8s-event
+        service_name: k8s-event
+        dc: bz1-shengshu1
+      url: http://loki-gateway/loki/api/v1/push
+      layout:
+        namespace: '{{ "{{ .Namespace }}" }}'
+        host     : '{{ "{{ .Source.Host }}" }}'
+        component: '{{ "{{ .Source.Component }}" }}'
+          
+        type     : '{{ "{{ .Type }}" }}'
+        reason   : '{{ "{{ .Reason }}" }}'
+        
+        kind     : '{{ "{{ .InvolvedObject.Kind }}" }}'
+        name     : '{{ "{{ .InvolvedObject.Name }}" }}'
+        uid      : '{{ "{{ .InvolvedObject.UID }}" }}'
+        apiVersion: '{{ "{{ .InvolvedObject.APIVersion }}" }}'
+        resourceVersion : '{{ "{{ .InvolvedObject.ResourceVersion }}" }}'
+        fieldPath: '{{ "{{ .InvolvedObject.FieldPath }}" }}'
+        ownerReferences: '{{ "{{ toJson .InvolvedObject.OwnerReferences }}" }}'
+        deleted   : '{{ "{{ .InvolvedObject.Deleted }}" }}'
+
+        timestamps: '{{ "{{ .FirstTimestamp.Unix }}" }}'
+        timestr   : '{{ "{{ .FirstTimestamp.Format \"2006-01-02 15:04:05\" }}" }}'
+        message   : '{{ "{{ .Message }}" }}'
+        labels    : '{{ "{{ toJson .InvolvedObject.Labels}}" }}'
+        count     : '{{ "{{ .Count }}" }}'
+  - name: "vlc"
+    loki:
+      headers: # optional
+        X-Scope-OrgID: 0
+        Content-Type: application/json
+      streamLabels:
+        classify: k8s-event
+        service_name: k8s-event
+        dc: bz1-shengshu1
+      url: http://vlc-vlinsert:9481/insert/loki/api/v1/push?_msg_field=log,message&_stream_fields=job,namespace,pod,instance,container,node_name,dev_id,dc,type,classify
+      layout:
+        namespace: '{{ "{{ .Namespace }}" }}'
+        host     : '{{ "{{ .Source.Host }}" }}'
+        component: '{{ "{{ .Source.Component }}" }}'
+          
+        type     : '{{ "{{ .Type }}" }}'
+        reason   : '{{ "{{ .Reason }}" }}'
+        
+        kind     : '{{ "{{ .InvolvedObject.Kind }}" }}'
+        name     : '{{ "{{ .InvolvedObject.Name }}" }}'
+        uid      : '{{ "{{ .InvolvedObject.UID }}" }}'
+        apiVersion: '{{ "{{ .InvolvedObject.APIVersion }}" }}'
+        resourceVersion : '{{ "{{ .InvolvedObject.ResourceVersion }}" }}'
+        fieldPath: '{{ "{{ .InvolvedObject.FieldPath }}" }}'
+        ownerReferences: '{{ "{{ toJson .InvolvedObject.OwnerReferences }}" }}'
+        deleted   : '{{ "{{ .InvolvedObject.Deleted }}" }}'
+
+        timestamps: '{{ "{{ .FirstTimestamp.Unix }}" }}'
+        timestr   : '{{ "{{ .FirstTimestamp.Format \"2006-01-02 15:04:05\" }}" }}'
+        message   : '{{ "{{ .Message }}" }}'
+        labels    : '{{ "{{ toJson .InvolvedObject.Labels}}" }}'
+        count     : '{{ "{{ .Count }}" }}'

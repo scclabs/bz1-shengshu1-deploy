@@ -1,0 +1,46 @@
+ids_drain_node:
+  prometheus: qos_cn
+ 
+  ## 关注drain节点的各个团队
+  reason_types : ['admin','zw','customer-service','others']
+
+  reason_types_rename : {
+      'admin'            : "需管理员处理节点",
+      'zw'               : "需现场人员处理节点",
+      'customer-service' : "需客服人员处理节点",
+      'others'           : "其他原因drain节点"
+  }
+
+  reason_match : {      
+            '[Gg][Qq].*'                                 : {"atention":"admin", "rename": "郭全drain节点"},
+            '[Ll][Ii][Ff][Bb].*'                         : {"atention":"admin", "rename": "李福宝drain节点"},
+            '[Ll][Ss].*'                                 : {"atention":"admin", "rename": '梁硕drain节点'},
+            '[Mm][Aa].*'                                  : {"atention":"admin", "rename": '马志伟drain节点'},
+            '.*osimage.*update.*|.*update.*osimage.*'     : {"atention":"admin", "rename": 'osimage update'},
+            'Qos_Orphan_Checked'                          : {"atention":"customer-service", "rename": "孤儿作业"},
+            '.*Qos_Owed_Billing_user'                     : {"atention":"customer-service", "rename": '试算用户欠费挂起'},
+            '.*QOS_hiops'                                 : {"atention":"customer-service", "rename": '高iops挂起'},
+            '(BF_.*|.*benchmark.*fail.*)'                 : {"atention":"zw", "rename": "benchmark fail"},
+            '(qos_cpu_MHz|Qos_cpu_external_clock_error)'  : {"atention":"zw", "rename": "CPU降频" },
+            'QoS_ib_low_speed'                            : {"atention":"zw", "rename": "IB降速"},
+            'Qos_ibcard_no_recog'                         : {"atention":"zw", "rename": "IB卡不识别"},
+            'Qos_opa_card_abnormal'                       : {"atention":"zw", "rename": "OPA卡异常"},
+            '.*Over_boot_30_days.*'                       : {"atention":"zw", "rename": "Over_boot_30_days"},
+            '.*zhongwei.*'                                : {"atention":"zw", "rename": "中卫drain节点"},
+            '.*Kill task failed.*'                        : {"atention":"zw", "rename": None},
+            '.*batch job complete failure.*'              : {"atention":"zw", "rename": None},
+            '.*Node unexpectedly rebooted.*'              : {"atention":"zw", "rename": None},
+            '.*Epilog error.*'                            : {"atention":"zw", "rename": None},
+            '.*Prolog error.*'                            : {"atention":"zw", "rename": None},
+            '.*SlurmdSpoolDir is full.*'                  : {"atention":"zw", "rename": None},
+            '.*Could not unpack gres data.*'              : {"atention":"zw", "rename": None},
+            '.*Low socket*core*thread count.*'            : {"atention":"zw", "rename": None},
+            '.*Low CPUs.*'                                : {"atention":"zw", "rename": None},
+            '.*Low RealMemory.*'                          : {"atention":"zw", "rename": 'Low RealMemory'},
+            '.*Low TmpDisk.*'                             : {"atention":"zw", "rename": None},
+            '.*Not responding.*'                          : {"atention":"zw", "rename": None},
+            }
+
+  reason_match_list : ['[Gg][Qq].*','[Ll][Ii][Ff][Bb].*','[Ll][Ss].*','[Mm][Aa].*','.*osimage.*update.*|.*update.*osimage.*','Qos_Orphan_Checked','.*Qos_Owed_Billing_user','.*QOS_hiops','(BF_.*|.*benchmark.*fail.*)','(qos_cpu_MHz|Qos_cpu_external_clock_error)','QoS_ib_low_speed','Qos_ibcard_no_recog','Qos_opa_card_abnormal','.*Over_boot_30_days.*','.*zhongwei.*','.*Kill task failed.*','.*batch job complete failure.*','.*Node unexpectedly rebooted.*','.*Epilog error.*','.*Prolog error.*','.*SlurmdSpoolDir is full.*','.*Could not unpack gres data.*','.*Low socket*core*thread count.*','.*Low CPUs.*','.*Low RealMemory.*','.*Low TmpDisk.*','.*Not responding.*']
+
+

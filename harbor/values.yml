@@ -159,7 +159,7 @@ core:
     requests:
       cpu: 64m
     limits:
-      memory: 256Mi
+      memory: 2G
   tolerations:
     - operator: "Exists"
       effect: "NoSchedule"
@@ -195,7 +195,7 @@ registry:
     requests:
       cpu: 64m
     limits:
-      memory: 256Mi
+      memory: 5G
   tolerations:
     - operator: "Exists"
       effect: "NoSchedule"

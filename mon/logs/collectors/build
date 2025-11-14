@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# 使用说明:
+# 该脚本用于构建或部署 Loki.
+#
+# 用法:
+#   ./build [tag] [up]
+#
+# 参数:
+#   tag: 可选. 指定要使用的 tag. 默认为 "loki".
+#   up:  可选. 如果指定为 "up", 则执行 helmwave up, 否则执行 helmwave build.
+#
+# 示例:
+#   ./build             # 使用默认 tag "loki", 执行 helmwave build
+#   ./build myloki      # 使用 tag "myloki", 执行 helmwave build
+#   ./build myloki up   # 使用 tag "myloki", 执行 helmwave up
+#   ./build loki up     # 使用默认 tag "loki", 执行 helmwave up
+
+dir=$(dirname $0)
+cd $dir
+
+# 检查 helmwave 命令是否存在
+if ! command -v helmwave &> /dev/null
+then
+    echo "错误: helmwave 命令未找到. 请确保已安装 helmwave."
+    exit 1
+fi
+
+tag=${1:-"loki"}
+
+# 检查 tag 是否为空
+if [ -z "$tag" ]; then
+    echo "错误: tag 参数不能为空."
+    exit 1
+fi
+
+if [ "$2" = "up" ]; then
+    helmwave up --plandir .helmwave/$tag
+elif [ "$2" = "down" ]; then
+    helmwave down --plandir .helmwave/$tag
+else
+    helmwave build --tags $tag --plandir .helmwave/$tag
+fi

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+dir=$(cd "$(dirname "$0")"; pwd)
+
+cd $dir/charts
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm repo update grafana
+helm repo update bitnami
+
+helm pull grafana/promtail
+helm pull bitnami/kubernetes-event-exporter

@@ -1,0 +1,27 @@
+.options: &options
+  # if set, upgrade process rolls back changes made in case of failed upgrade. 
+  atomic: false
+  # the wait will be set automatically if atomic is true
+  wait: false
+  # time to wait for any individual Kubernetes operation .
+  timeout: 300s
+  # limit the maximum number of revisions saved per release.
+  max_history: 3
+  # create the release namespace if not present.
+  create_namespace: true
+  pending_release_strategy: rollback
+
+# repositories:
+#   - name: vm
+#     url: https://victoriametrics.github.io/helm-charts/
+
+releases:
+- name: vlc
+  <<: *options
+  chart:
+    name: ./charts/victoria-logs-cluster-0.0.18.tgz
+  namespace: mon
+  tags: ["vlc"]
+  values:
+  - ./values/vlc.yml
+

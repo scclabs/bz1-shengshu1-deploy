@@ -1,0 +1,522 @@
+configFiles:
+  config.yml: 
+    service:
+      host: '0.0.0.0'
+      port: 5000
+
+    # 这里设置 qos_webhook_adaptor 内部发生错误时推送的 hook
+    # notify_hook:
+    # - name: 
+
+    # configs for specific templates
+    render:
+      AM_TO_WX:
+        templates:
+          high_lustre_job_oprt:  # -> templete: high_lustre_job_man ， need fixed to same name
+            remote_oprt_servers: {}
+
+    # receiver 默认配置
+    receivers_defaults:
+      render  : "AM_TO_WX"
+      template: "default"
+
+    # 设置 所有 recevers 的特性设置
+    receivers:
+
+    - name: "mon-vm-alertmanager-receiver-fs-qh3-alert-robot"
+      lables:
+        QYWXGroup: 生数科技 并行报警群(内部)
+        robot    : AlertTest
+      alerts:
+
+        discoverd_gpu_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_not_recognized:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_link_error:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_eth_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_device_temp_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors_man: 
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+          # operator     : k8s_node_operator
+          # operator_args:
+          #   oprt_firing      : "cordon"
+          #   oprt_resolved    : "uncordon"
+          #   max_cordon       : 3
+          #   test             : "1"
+          #   match_node       : "gn.*"
+          #   label_key        : "ids.paratera.com/alert_discoverd_gpu_card_xid_errors"
+          #   label_check_pre  : "ids.paratera.com/alert_"
+
+        discoverd_node_rootfs_usage_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_custom_alert:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "rename", "test", "mentioned_list" ]
+
+    - name: "mon-vm-alertmanager-receiver-fs-qh3-alert-robot-no-resolved"
+      lables:
+        QYWXGroup: 生数科技 并行报警群(内部)
+        robot    : AlertTest
+      alerts:
+
+        discoverd_gpu_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_not_recognized:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_link_error:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_eth_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_device_temp_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors_man: 
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+          # operator     : k8s_node_operator
+          # operator_args:
+          #   oprt_firing      : "cordon"
+          #   oprt_resolved    : "uncordon"
+          #   max_cordon       : 3
+          #   test             : "1"
+          #   match_node       : "gn.*"
+          #   label_key        : "ids.paratera.com/alert_discoverd_gpu_card_xid_errors"
+          #   label_check_pre  : "ids.paratera.com/alert_"
+
+        discoverd_node_rootfs_usage_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_custom_alert:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "rename", "test", "mentioned_list" ]
+
+        discoverd_custom_alert_no_resolved:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "rename", "test", "mentioned_list" ]
+
+    - name: "mon-vm-alertmanager-receiver-fs-qh3-alert-ext-robot"
+      lables:
+        QYWXGroup: 生数科技 并行报警群(外部)
+        robot    : AlertTest
+      alerts:
+
+        discoverd_gpu_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_not_recognized:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_link_error:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_eth_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_device_temp_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors_man: 
+          render  : "AM_TO_FS"
+          template: "custom_man"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test", "Hostname" ]
+          operator     : k8s_node_operator_v2
+          operator_args:
+            oprt_firing:
+              test: 0                      # 0 关闭测试模式 ; 1 开启测试模式
+              dry_run: 0                   # 0 正式运行 ; 1 dry_run 模式运行 (test模式优先级高于dry_run模式)
+              skip_on_error: 0             # 0 报错后停止运行 ; 1 报错后继续运行
+              quit_on_error: 0             # 0 报错后继续运行 ; 1 报错后退出程序
+              max_cordon: 500              # 集群中最大禁止调度数量
+              skip_if_cordoned: 0          # 0 已cordon节点仍然执行操作; 1 已 cordon 节点不再执行操作
+              skip_if_over_max_cordon: 1   # 0 已达到最大禁止调度数量仍然执行操作; 1 已达到最大禁止调度数量不再执行操作
+              step:
+              - name: cordon节点
+                oprt: cordon
+                args:
+                  add_node_label:  # 添加节点标签 格式为字典
+                    "ids.paratera.com/alert_discover_test": "true"
+
+              - name: 节点添加标签
+                oprt: add_label
+                args:
+                  add_node_label: # 添加节点标签 格式为字典
+                    "node-role.kubernetes.io/maintenance": "true"
+
+              - name: taint节点
+                oprt: taint
+                args:
+                  append_args: # taint参数 格式为字符串 key=value:effect , 以列表形式传入多个参数
+                    - foo-bad=None:NoSchedule
+
+              - name: 删除pod
+                oprt: del_pod
+                args:
+                  namespace: prod    # 删除pod所在命名空间
+                  match_re:
+                    pod_name: sip-worker-node-monitor-daemonset.*  # pod名称匹配正则表达式
+
+              - name: drain节点
+                oprt: drain
+
+        discovered_gpu_card_error_log:
+          skip_resolved: 1
+          render: "AM_TO_FS"
+          template: "custom"
+          show_alert_time: 1
+          group_wait: 10s
+          group_by: [ "alertname" ]
+          silence:
+            duration: "59m"
+            labels: [ "node"]
+
+        discoverd_node_rootfs_usage_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_custom_alert:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "rename", "test", "mentioned_list" ]
+
+    - name: "mon-vm-alertmanager-receiver-fs-qh3-alert-ext-robot-no-resolved"
+      lables:
+        QYWXGroup: 生数科技 并行报警群(外部)
+        robot    : AlertTest
+      alerts:
+
+        discoverd_gpu_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_not_recognized:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_link_error:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_eth_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_device_temp_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors_man: 
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+          # operator     : k8s_node_operator
+          # operator_args:
+          #   oprt_firing      : "cordon"
+          #   oprt_resolved    : "uncordon"
+          #   max_cordon       : 3
+          #   test             : "1"
+          #   match_node       : "gn.*"
+          #   label_key        : "ids.paratera.com/alert_discoverd_gpu_card_xid_errors"
+          #   label_check_pre  : "ids.paratera.com/alert_"
+
+        discoverd_node_rootfs_usage_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_custom_alert:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "rename", "test", "mentioned_list" ]
+
+        discovered_gpu_card_error_log:
+          skip_resolved: 1
+          render: "AM_TO_FS"
+          template: "custom"
+          show_alert_time: 1
+          group_wait: 10s
+          group_by: [ "alertname" ]
+          silence:
+            duration: "59m"
+            labels: [ "node"]
+
+    - name: "mon-vm-alertmanager-receiver-fs-ids-test-robot"
+      lables:
+        QYWXGroup: IDE测试群
+        robot    : DS_Alert
+      alerts:
+
+        discoverd_gpu_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_not_recognized:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_card_dropout:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_link_error:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_eth_speed_down:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_ib_device_temp_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_gpu_card_xid_errors_man_test: # 组存储真实容量期望容量不相符告警
+          render  : "AM_TO_FS"
+          template: "custom_man"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+          operator     : k8s_node_operator
+          operator_args:
+            oprt_firing      : "cordon"
+            oprt_resolved    : "uncordon"
+            max_cordon       : 1
+            test             : "1"
+            match_node       : "gn.*"
+            label_key        : "ids.paratera.com/alert_discoverd_gpu_card_xid_errors"
+            label_check_pre  : "ids.paratera.com/alert_"
+
+        discoverd_node_rootfs_usage_too_high:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+        discoverd_custom_alert:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "rename", "test", "mentioned_list" ]
+
+    - name: "mon-qywx-qh3-4090-5090-rsc-mt-ids-alert-robot"
+      lables:
+        QYWXGroup: 清华3号4090-5090资源项目维护群
+        robot    : IDS_Alert
+      alerts:
+
+        discovered_gpu_card_xid_errors_special_attention:
+          skip_resolved: 1
+          render: "AM_TO_WX"
+          template: "custom"
+          show_alert_time: 1
+          group_wait: 10s
+          group_by: [ "alertname" ]
+          mentioned_list: ["@chenzhong"]
+          silence:
+            duration: "5h59m"
+            labels: [ "Hostname","gpu"] 
+
+    - name: "mon-qywx-qh3-4090-5090-rsc-mt-ids-alert-robot-no-resolved"
+      lables:
+        QYWXGroup: 清华3号4090-5090资源项目维护群
+        robot    : IDS_Alert
+      alerts:
+
+        discovered_gpu_card_xid_errors_special_attention:
+          skip_resolved: 1
+          render: "AM_TO_WX"
+          template: "custom"
+          show_alert_time: 1
+          group_wait: 10s
+          group_by: [ "alertname" ]
+          mentioned_list: ["@chenzhong"]
+          silence:
+            duration: "5h59m"
+            labels: [ "Hostname","gpu"] 
