@@ -4,3 +4,4 @@ namespace: juicefs-csi
 resources:
   - secret.yaml
   - storageclass.yaml
+  - juicefs-csi-driver-config.yaml
