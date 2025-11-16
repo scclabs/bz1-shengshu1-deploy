@@ -4,7 +4,7 @@ victoria-metrics-operator:
       key: node-role.kubernetes.io/control-plane
       operator: Exists
   nodeSelector:
-    node-role.kubernetes.io/control-plane: "true"
+    node-role.kubernetes.io/control-plane: ""
 
 vmagent:
   spec:
@@ -13,7 +13,7 @@ vmagent:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
     nodeSelector:
-      node-role.kubernetes.io/control-plane: "true"
+      node-role.kubernetes.io/control-plane: ""
 
 grafana:
   defaultDashboardsTimezone: CST
@@ -22,7 +22,7 @@ grafana:
       key: node-role.kubernetes.io/control-plane
       operator: Exists
   nodeSelector:
-    node-role.kubernetes.io/control-plane: "true"
+    node-role.kubernetes.io/control-plane: ""
 
 kube-state-metrics:
   tolerations:
@@ -30,7 +30,7 @@ kube-state-metrics:
       key: node-role.kubernetes.io/control-plane
       operator: Exists
   nodeSelector:
-    node-role.kubernetes.io/control-plane: "true"
+    node-role.kubernetes.io/control-plane: ""
 
 vmalert:
   spec:
@@ -39,7 +39,7 @@ vmalert:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
     nodeSelector:
-      node-role.kubernetes.io/control-plane: "true"
+      node-role.kubernetes.io/control-plane: ""
 
 alertmanager:
   spec:
@@ -49,7 +49,7 @@ alertmanager:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
     nodeSelector:
-      node-role.kubernetes.io/control-plane: "true"
+      node-role.kubernetes.io/control-plane: ""
 
 vmsingle:
   spec:
@@ -58,7 +58,7 @@ vmsingle:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
     nodeSelector:
-      node-role.kubernetes.io/control-plane: "true"
+      node-role.kubernetes.io/control-plane: ""
     extraArgs:
       search.maxQueueDuration: 1m
       search.maxQueryDuration: 1m
@@ -73,7 +73,7 @@ vmauth:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
     nodeSelector:
-      node-role.kubernetes.io/control-plane: "true"
+      node-role.kubernetes.io/control-plane: ""
 
 vmcluster:
   spec:
@@ -83,7 +83,7 @@ vmcluster:
           key: node-role.kubernetes.io/control-plane
           operator: Exists
       nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+        node-role.kubernetes.io/control-plane: ""
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -97,7 +97,7 @@ vmcluster:
           key: node-role.kubernetes.io/control-plane
           operator: Exists
       nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+        node-role.kubernetes.io/control-plane: ""
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -111,7 +111,7 @@ vmcluster:
           key: node-role.kubernetes.io/control-plane
           operator: Exists
       nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+        node-role.kubernetes.io/control-plane: ""
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
