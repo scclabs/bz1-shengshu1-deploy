@@ -5,7 +5,7 @@ mn_tolerations: &mn_tolerations_spec
     key: node-role.kubernetes.io/control-plane
     operator: Exists
   nodeSelector:
-    node-role.kubernetes.io/control-plane: "true"
+    node-role.kubernetes.io/control-plane: 
 
 lokiCanary:
   <<: *mn_tolerations_spec
