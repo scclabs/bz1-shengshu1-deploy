@@ -1,0 +1,50 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  name: vm-alertmanager-receiver-fs-tensor-abnormal
+  labels:
+    app: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+  namespace: mon
+spec:
+
+  route:
+    receiver: 'blackhole'
+    continue: true
+    matchers:
+    - alertname =~ "discoverd_.*"
+    - retitle =~ ".*"
+    #- disable = "1"     # 静默先关的所有报警
+
+    routes:
+
+    - receiver: 'robot'
+      group_by: ['...']
+      group_wait: 10s
+      group_interval: 20s
+      repeat_interval: 1h
+      continue: false
+      matchers:
+      - alertname =~ "(discoverd_gpu_card_tensor_abnormal)"
+      - retitle =~ "(清华3号（bz1-shenshu1）- 发现GPU卡tensor数据异常)"
+      - test = ""
+
+    - receiver: robot
+      matchers:
+      - alertname = "4781546152"
+
+    - receiver: robot-no-resolved
+      matchers:
+      - alertname = "4567453245"
+
+  receivers:
+  # 飞书：生数科技 并行报警群(内部)
+  - name: 'robot'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=e04086b1-f2f2-42f0-8112-7b06402b3b7d"
+  - name: 'robot-no-resolved'  # operator 会自动重命名
+    webhook_configs:
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=e04086b1-f2f2-42f0-8112-7b06402b3b7d"
+      send_resolved: false
+  - name: 'blackhole'             # operator 会自动重命名，不建立在上面的顶层 receiver 无法使用
+

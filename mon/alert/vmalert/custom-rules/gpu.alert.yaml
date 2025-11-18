@@ -97,3 +97,20 @@ spec:
     #     rename  : disable    
     #   annotations:
     #     summary: "**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**: {{ $labels.pci_bus_id }} | **Code**: {{ $value }}"
+
+    - alert: discoverd_gpu_card_tensor_abnormal
+      expr: >- 
+        count(avg_over_time((avg(DCGM_FI_DEV_GPU_UTIL) by (Hostname,gpu,modelName,DCGM_FI_DRIVER_VERSION))[2h]) > 1 
+          unless on (Hostname,gpu,modelName) (avg_over_time((avg(DCGM_FI_PROF_PIPE_TENSOR_ACTIVE) by (Hostname,gpu,modelName,DCGM_FI_DRIVER_VERSION)*100)[2h]) > 0  ) 
+          unless on (Hostname,gpu,modelName) (avg_over_time((avg(DCGM_FI_PROF_PIPE_FP64_ACTIVE) by (Hostname,gpu,modelName,DCGM_FI_DRIVER_VERSION)*100)[2h]) > 0  ) 
+          unless on (Hostname,gpu,modelName) (avg_over_time((avg(DCGM_FI_PROF_PIPE_FP32_ACTIVE) by (Hostname,gpu,modelName,DCGM_FI_DRIVER_VERSION)*100)[2h]) > 0  ) 
+          unless on (Hostname,gpu,modelName) (avg_over_time((avg(DCGM_FI_PROF_PIPE_FP16_ACTIVE) by (Hostname,gpu,modelName,DCGM_FI_DRIVER_VERSION)*100)[2h]) > 0  ) ) 
+        by (Hostname,modelName,DCGM_FI_DRIVER_VERSION)
+      for: 2h
+      labels:
+        severity: critical
+        retitle : 清华3号（bz1-shenshu1）- 发现GPU卡tensor数据异常 # 集群名称 - 发现GPU卡tensor数据异常
+        rename  : disable    
+      annotations:
+        summary: "节点: {{ $labels.Hostname }} | gpu卡型号: {{ $labels.modelName }} | 驱动版本: {{ $labels.DCGM_FI_DRIVER_VERSION }}"
+        pending_time: 2h

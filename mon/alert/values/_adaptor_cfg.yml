@@ -520,3 +520,27 @@ configFiles:
           silence:
             duration: "5h59m"
             labels: [ "Hostname","gpu"] 
+
+    - name: "mon-vm-alertmanager-receiver-fs-tensor-abnormal-robot"
+      lables:
+        QYWXGroup: dcgm采集tensor异常报警群
+        robot    : IDS_Alert
+      alerts:
+
+        discoverd_gpu_card_tensor_abnormal:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]
+
+    - name: "mon-vm-alertmanager-receiver-fs-tensor-abnormal-robot-no-resolved"
+      lables:
+        QYWXGroup: dcgm采集tensor异常报警群
+        robot    : IDS_Alert
+      alerts:
+
+        discoverd_gpu_card_tensor_abnormal:
+          render  : "AM_TO_FS"
+          template: "custom"
+          group_wait: 5s
+          group_by: [ "alertname", "retitle", "test" ]

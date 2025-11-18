@@ -30,7 +30,7 @@ spec:
 
     # 报警：pod 异常退出
     - alert: discoverd_custom_alert_no_resolved
-      expr: (kube_pod_container_status_terminated_reason{namespace!~"default",reason!="Completed"} == 1) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+      expr: (kube_pod_container_status_terminated_reason{namespace!~"default|mon",reason!="Completed"} == 1) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       for : 0m
       labels:
         severity: critical
@@ -44,7 +44,7 @@ spec:
     # 报警：pod 状态异常
     - alert: discoverd_custom_alert
       expr: >-
-        ((kube_pod_status_phase{namespace!~"default|prod",phase!~"Running|Pending|Succeeded"} > 0) and on (pod, namespace) (time() - kube_pod_start_time) > 300) 
+        ((kube_pod_status_phase{namespace!~"default|prod|mon",phase!~"Running|Pending|Succeeded"} > 0) and on (pod, namespace) (time() - kube_pod_start_time) > 300) 
         + on(namespace,pod) group_left(node) (kube_pod_info * 0)
         unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       for : 2m
@@ -60,7 +60,7 @@ spec:
     # 报警：pod container 状态异常
     - alert: discoverd_custom_alert
       expr: >-
-        (kube_pod_container_status_waiting_reason{namespace!~"default|prod",reason!~"ContainerCreating|PodInitializing"} == 1 or kube_pod_container_status_waiting_reason{namespace!~"default",reason!~"ContainerCreating|PodInitializing"} offset 30s == 1) 
+        (kube_pod_container_status_waiting_reason{namespace!~"default|prod|mon",reason!~"ContainerCreating|PodInitializing"} == 1 or kube_pod_container_status_waiting_reason{namespace!~"default",reason!~"ContainerCreating|PodInitializing"} offset 30s == 1) 
         + on(namespace,pod) group_left(node) (kube_pod_info * 0)
         unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       for : 3m
@@ -76,7 +76,7 @@ spec:
     # 报警：pod container 持续重启
     - alert: discoverd_custom_alert
       expr: >-
-        (kube_pod_container_status_restarts_total{namespace!~"default"} > 2 and (increase(kube_pod_container_status_restarts_total[6m]) > 0 or increase(kube_pod_container_status_restarts_total[6m]) offset 1m > 0 ))
+        (kube_pod_container_status_restarts_total{namespace!~"default|mon"} > 2 and (increase(kube_pod_container_status_restarts_total[6m]) > 0 or increase(kube_pod_container_status_restarts_total[6m]) offset 1m > 0 ))
         + on(namespace,pod) group_left(node) (kube_pod_info * 0)
         unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       for : 2m
@@ -92,7 +92,7 @@ spec:
     # 报警：pod 
     - alert: discoverd_custom_alert
       expr: >-
-        ((time() - kube_pod_deletion_timestamp{namespace!~"default"}) > 600) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
+        ((time() - kube_pod_deletion_timestamp{namespace!~"default|mon"}) > 600) + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       # expr: (((time() - kube_pod_deletion_timestamp{namespace!~"default"}) > 600) + on(namespace,pod) group_left(node) (kube_pod_info * 0)) offset 1h
       for : 0s
       labels:

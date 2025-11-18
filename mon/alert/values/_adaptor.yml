@@ -21,7 +21,7 @@ readinessProbe:
     port: http
 
 nodeSelector:
-  node-role.kubernetes.io/control-plane: "true"
+  node-role.kubernetes.io/control-plane: ""
 tolerations:
   - effect: NoSchedule
     key: node-role.kubernetes.io/control-plane

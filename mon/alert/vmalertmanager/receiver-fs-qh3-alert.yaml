@@ -146,10 +146,10 @@ spec:
   # 飞书：生数科技 并行报警群(内部)
   - name: 'robot'  # operator 会自动重命名
     webhook_configs:
-    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=7b87b62a-9199-4933-b2cb-b4e074d4b26f"
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=00f918e7-52d2-4b5d-bb8d-bde68eb0dcc5"
   - name: 'robot-no-resolved'  # operator 会自动重命名
     webhook_configs:
-    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=7b87b62a-9199-4933-b2cb-b4e074d4b26f"
+    - url: "http://al-adaptor-qos-alert-adaptor:5000/am/fs/robot?key=00f918e7-52d2-4b5d-bb8d-bde68eb0dcc5"
       send_resolved: false
   - name: 'blackhole'             # operator 会自动重命名，不建立在上面的顶层 receiver 无法使用
 

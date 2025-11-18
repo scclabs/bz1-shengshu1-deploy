@@ -41,6 +41,7 @@ resources:
 - vmalertmanager/receiver-fs-ids-test.yaml
 - vmalertmanager/receiver-fs-qh3-alert.yaml
 - vmalertmanager/receiver-fs-qh3-alert-ext.yaml
+- vmalertmanager/receiver-fs-tensor-abnormal.yaml
 - vmalertmanager/receiver-qywx-qh3-4090-5090-rsc-mt-ids-alert.yaml
 
 # # qos-alert-adaptor 提供飞书告警渠道
