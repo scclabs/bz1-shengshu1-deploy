@@ -5,6 +5,7 @@ dc_accounts_update_to_db:
   # AICloud: ["BSCC-N23"]
 
   giturl: "https://git.paratera.net"
+  gittoken: "xxxxxxxxx"
   gitorg: "Microscope"
   project_name: "dc_accounts_data_statistics_manual"
 
