@@ -1,0 +1,404 @@
+apiVersion: v1
+data:
+  databases.yml: "dbservers:\n  qos-mysql:\n    engine: mysql\n    host  : qos10\n
+    \   port  : 3316\n\n  placeholder-mysql:\n    engine: mysql\n    host  : \"...\"\n
+    \   port  : 3316\n\n  placeholder-ck:\n    engine: clickhouse\n    host  : \"...\"\n
+    \   port  : 9000\n    user  : \"...\"\n    passwd: \"...\"\n\ndatabases:\n\n  qos-mysql-jobs:\n
+    \   server: qos-mysql\n    user  : \"...\"\n    passwd: \"...\"\n    db    : jobs\n\n
+    \ placeholder-mysql:\n    server: placeholder-mysql\n    user  : \"...\"\n    passwd:
+    \"...\"\n    db    : jobs\n\n  placeholder-ck:\n    server: placeholder-ck\n    db
+    \   : jobs  "
+  email_sender.yml: "senders:\n  yanght:\n    smtp   : \"smtp.qiye.163.com\"\n    user
+    \  : \"yanght@paratera.com\"\n    license: \"3qyfYn7YEakp7ELv\"   # 到期时间 2022-01-11\n\n
+    \ qos:\n    smtp   : \"smtp.qiye.163.com\"  \n    user   : \"qos@paratera.com\"
+    \  # password：K8Fe5c329F909f09\n    license: \"T9NeBg7abvL7kWjW\"   # 到期时间 2022-01-12\n
+    \   "
+  inputers.yml: "rocketmq:               \n\n"
+  recievers.yml: "recievers:\n  # qos 测试群，机器人sion\n  qos_test_sion:\n    webhook:
+    'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=b8088b27-2d41-4d12-be30-488d9236853d'\n
+    \   \n  # 清华3号4090-5090资源项目维护群 \n  Tsinghua3_4090_5090_resource_maintenance_IDS_Alert:\n
+    \   webhook: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=228f6402-128d-4b38-a86e-7d55c5905071'"
+  resources.yml: |-
+    promethes:
+
+      qos_cn:
+        server: http://...:9090/
+
+      Tsinghua3_vm:
+        server: http://vmselect-vmc-vmstack.mon.svc.cluster.local.:8481/select/0/prometheus
+  scheduals.yml: |+
+    schedules: []
+
+  service.yml: |
+    service:
+        host: '0.0.0.0'
+        port: 5210
+kind: ConfigMap
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler-config
+  namespace: mon
+---
+apiVersion: v1
+data:
+  logs_alerter.yml: |+
+    logs_alerters:
+
+      alerters: []
+
+kind: ConfigMap
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler-config-alerters
+  namespace: mon
+---
+apiVersion: v1
+data:
+  Tsinghua3_bad_gpu_card_report.yml: |-
+    Tsinghua3_bad_gpu_card_report:
+      prometheus: Tsinghua3_vm
+      cluster: bz1-shengshu1
+      user: 清华3号
+      available_node_threshold: 298
+      focus_node_list: []
+        # - gn-10-195-1-236
+        # - gn-10-195-1-243
+        # - gn-10-195-1-244
+        # - gn-10-195-1-253
+        # - gn-10-195-1-214
+        # - gn-10-195-1-220
+        # - gn-10-195-1-225
+        # - gn-10-195-2-56
+        # - gn-10-195-2-67
+        # - gn-10-195-2-9
+        # - gn-10-195-2-37
+        # - gn-10-195-2-102
+        # - gn-10-195-0-142
+        # - gn-10-195-0-146
+        # - gn-10-195-0-170
+        # - gn-10-195-0-173
+        # - gn-10-195-0-179
+        # - gn-10-195-0-214
+        # - gn-10-195-0-220
+        # - gn-10-195-1-28
+        # - gn-10-195-1-43
+        # - gn-10-195-1-44
+        # - gn-10-195-1-64
+        # - gn-10-195-1-66
+        # - gn-10-195-0-148
+        # - gn-10-195-0-149
+        # - gn-10-195-0-150
+        # - gn-10-195-0-151
+        # - gn-10-195-0-152
+        # - gn-10-195-0-154
+        # - gn-10-195-0-155
+        # - gn-10-195-0-157
+        # - gn-10-195-0-158
+        # - gn-10-195-0-159
+        # - gn-10-195-0-160
+        # - gn-10-195-0-161
+        # - gn-10-195-0-162
+        # - gn-10-195-0-163
+        # - gn-10-195-0-165
+        # - gn-10-195-0-166
+        # - gn-10-195-0-167
+        # - gn-10-195-0-168
+        # - gn-10-195-0-169
+        # - gn-10-195-0-171
+  Tsinghua3_bad_gpu_card_report_1h.yml: |-
+    Tsinghua3_bad_gpu_card_report:
+      prometheus: Tsinghua3_vm  # 这里根据实际prometheus地址填写
+      cluster: bz1-shengshu1
+      user: 清华3号
+      available_node_threshold: 0
+  calculate_accounts_mh_usage.yml: ""
+  cancel_jobs_by_comment.yml: "cancel_jobs_by_comment:\n  mysql         : placeholder-mysql\n
+    \ prometheus    : qos_cn\n  todo_table    : cancel_by_comment_jobs_todo\n  history_table
+    : cancel_by_comment_jobs_history\n  token         : i3idjehas7467akhasg164kj455jlz\n
+    \ circuit_breaker : 10\n  cancel_job_url : http://svc.qos.stg.paratera.com:8080\n
+    \ cancel_job_token : b643a024cfbc082ece5af419b47b4e1b\n  \n\n  callback      :
+    ''\n  token_get     : ''"
+  check_user_storage_current.yml: ""
+  cnode_rsc_health_status_exception_rollup.yml: ""
+  daily_duty_officer.yml: ""
+  dc_accounts_equal_ratio.yml: ""
+  dc_accounts_statistic.yml: ""
+  dc_accounts_update_to_db.yml: |
+    dc_accounts_update_to_db:
+
+      dcs: []
+      # AICluster: ["BSCC-N22", "BSCC-N26", "BSCC-N28", "NC-N30", "BSCC-N36", "BSCC-N32-E", "CNGrid12"]
+      # AICloud: ["BSCC-N23"]
+
+      giturl: "https://git.paratera.net"
+      gittoken: "xxxxxxxxx"
+      gitorg: "Microscope"
+      project_name: "dc_accounts_data_statistics_manual"
+
+      mysql: placeholder-mysql
+  device_unavaiable_time_analysic.yml: ""
+  ds_internal_svcs_online_check.yml: "ds_internal_svcs_online_check:\n  mysql     :
+    placeholder-mysql\n\n  tables : { \n            'internal_svcs'    : \"qms_dim_meta_svcs\",\n
+    \           'svcs_online_info' : \"qms_dws_ds_internal_service_online_everyday\"\n
+    \           }\n"
+  failed_job_statistic.yml: "node_fail_statistic:\n  \n  title     : \"**NODE_FAIL**
+    作业节点统计报告\"\n  prometheus: qos_cn\n  dcs       : []\n  mysql     : qos-mysql-jobs
+    \     # find it in config/databases.yml -> databases:\n  # end_time  : \"09:00:00\"\n\n\n"
+  fnode_rsc_health_status_exception_rollup.yml: ""
+  get_excel_from_git_to_mysql.yml: ""
+  ib_network_speed_checked_deceleration.yml: ""
+  ib_query_service.yml: ""
+  ids_drain_node.yml: "ids_drain_node:\n  prometheus: qos_cn\n \n  ## 关注drain节点的各个团队\n
+    \ reason_types : ['admin','zw','customer-service','others']\n\n  reason_types_rename
+    : {\n      'admin'            : \"需管理员处理节点\",\n      'zw'               : \"需现场人员处理节点\",\n
+    \     'customer-service' : \"需客服人员处理节点\",\n      'others'           : \"其他原因drain节点\"\n
+    \ }\n\n  reason_match : {      \n            '[Gg][Qq].*'                                 :
+    {\"atention\":\"admin\", \"rename\": \"郭全drain节点\"},\n            '[Ll][Ii][Ff][Bb].*'
+    \                        : {\"atention\":\"admin\", \"rename\": \"李福宝drain节点\"},\n
+    \           '[Ll][Ss].*'                                 : {\"atention\":\"admin\",
+    \"rename\": '梁硕drain节点'},\n            '[Mm][Aa].*'                                  :
+    {\"atention\":\"admin\", \"rename\": '马志伟drain节点'},\n            '.*osimage.*update.*|.*update.*osimage.*'
+    \    : {\"atention\":\"admin\", \"rename\": 'osimage update'},\n            'Qos_Orphan_Checked'
+    \                         : {\"atention\":\"customer-service\", \"rename\": \"孤儿作业\"},\n
+    \           '.*Qos_Owed_Billing_user'                     : {\"atention\":\"customer-service\",
+    \"rename\": '试算用户欠费挂起'},\n            '.*QOS_hiops'                                 :
+    {\"atention\":\"customer-service\", \"rename\": '高iops挂起'},\n            '(BF_.*|.*benchmark.*fail.*)'
+    \                : {\"atention\":\"zw\", \"rename\": \"benchmark fail\"},\n            '(qos_cpu_MHz|Qos_cpu_external_clock_error)'
+    \ : {\"atention\":\"zw\", \"rename\": \"CPU降频\" },\n            'QoS_ib_low_speed'
+    \                           : {\"atention\":\"zw\", \"rename\": \"IB降速\"},\n            'Qos_ibcard_no_recog'
+    \                        : {\"atention\":\"zw\", \"rename\": \"IB卡不识别\"},\n            'Qos_opa_card_abnormal'
+    \                      : {\"atention\":\"zw\", \"rename\": \"OPA卡异常\"},\n            '.*Over_boot_30_days.*'
+    \                      : {\"atention\":\"zw\", \"rename\": \"Over_boot_30_days\"},\n
+    \           '.*zhongwei.*'                                : {\"atention\":\"zw\",
+    \"rename\": \"中卫drain节点\"},\n            '.*Kill task failed.*'                        :
+    {\"atention\":\"zw\", \"rename\": None},\n            '.*batch job complete failure.*'
+    \             : {\"atention\":\"zw\", \"rename\": None},\n            '.*Node
+    unexpectedly rebooted.*'              : {\"atention\":\"zw\", \"rename\": None},\n
+    \           '.*Epilog error.*'                            : {\"atention\":\"zw\",
+    \"rename\": None},\n            '.*Prolog error.*'                            :
+    {\"atention\":\"zw\", \"rename\": None},\n            '.*SlurmdSpoolDir is full.*'
+    \                 : {\"atention\":\"zw\", \"rename\": None},\n            '.*Could
+    not unpack gres data.*'              : {\"atention\":\"zw\", \"rename\": None},\n
+    \           '.*Low socket*core*thread count.*'            : {\"atention\":\"zw\",
+    \"rename\": None},\n            '.*Low CPUs.*'                                :
+    {\"atention\":\"zw\", \"rename\": None},\n            '.*Low RealMemory.*'                          :
+    {\"atention\":\"zw\", \"rename\": 'Low RealMemory'},\n            '.*Low TmpDisk.*'
+    \                            : {\"atention\":\"zw\", \"rename\": None},\n            '.*Not
+    responding.*'                          : {\"atention\":\"zw\", \"rename\": None},\n
+    \           }\n\n  reason_match_list : ['[Gg][Qq].*','[Ll][Ii][Ff][Bb].*','[Ll][Ss].*','[Mm][Aa].*','.*osimage.*update.*|.*update.*osimage.*','Qos_Orphan_Checked','.*Qos_Owed_Billing_user','.*QOS_hiops','(BF_.*|.*benchmark.*fail.*)','(qos_cpu_MHz|Qos_cpu_external_clock_error)','QoS_ib_low_speed','Qos_ibcard_no_recog','Qos_opa_card_abnormal','.*Over_boot_30_days.*','.*zhongwei.*','.*Kill
+    task failed.*','.*batch job complete failure.*','.*Node unexpectedly rebooted.*','.*Epilog
+    error.*','.*Prolog error.*','.*SlurmdSpoolDir is full.*','.*Could not unpack gres
+    data.*','.*Low socket*core*thread count.*','.*Low CPUs.*','.*Low RealMemory.*','.*Low
+    TmpDisk.*','.*Not responding.*']\n\n\n"
+  invalid_power_key_pressed_report.yml: ""
+  kdump_mem_err_alert.yml: ""
+  node_benchmark_fail_node_stats.yml: ""
+  node_rsc_unhealth_data_to_db.yml: |-
+    node_rsc_unhealth_data_to_db:
+        prometheus: qos_cn
+        mysql: placeholder-mysql
+        mysql_table: node_rsc_unhealth_alert_info
+  over_boot_30d_nodes.yml: ""
+  power_key_pressed.yml: |-
+    # partitions config
+    partitions: {}
+
+    # mysql config
+    mysql: placeholder-mysql    # find it in config/databases.yml -> databases:
+    # prometheus config
+    prometheus: qos_cn
+    # clickhouse config
+    clickhouse: placeholder-ck
+    # invalid press state list
+    invalid_press_state_list: ["idle", "allocated", "completing", "draining", "mixed"]
+
+    # log match rules
+    log_matching_rules:
+      keyword: "systemd-logind: INFO  Power key pressed."
+      take_effect_condition: all
+  send_logs_by_email.yml: ""
+  slurm_mysql_dump_status.yml: ""
+  statistic_mh.yml: |-
+    statistic_mh:
+      tasks: []
+  storage_check.yml: "storage_check:\n  \n  title: 电厂存储检查报告\n\n  tasks:\n  tasks:
+    []\n"
+  storage_create_acc_limit_level.yml: ""
+  storage_jobs_gflops.yml: ""
+  storage_util_eval.yml: ""
+  users_sync.yml: ""
+  valid_pending_jobs.yml: ""
+  vip_queue_node_state.yml: |+
+    vip_queue_node_state:
+
+      tasks: []
+
+
+  vip_queues_lifecycle.yml: ""
+kind: ConfigMap
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler-config-tasks
+  namespace: mon
+---
+apiVersion: v1
+data:
+  logs_analyzers.yml: ""
+kind: ConfigMap
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler-config-workers
+  namespace: mon
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler
+  namespace: mon
+spec:
+  ports:
+  - name: http
+    port: 5210
+    targetPort: 5210
+  selector:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler-cache
+  namespace: mon
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: shared-juice
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+  name: qostaskscheduler-var
+  namespace: mon
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: shared-juice
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: ds-alert-qostaskscheduler
+    component: qostaskscheduler
+    env: prod
+    proj: alert
+    version: v1
+  name: ds-alert-qostaskscheduler
+  namespace: mon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ds-alert-qostaskscheduler
+      component: qostaskscheduler
+      env: prod
+      proj: alert
+      version: v1
+  serviceName: ds-alert-qostaskscheduler
+  template:
+    metadata:
+      labels:
+        app: ds-alert-qostaskscheduler
+        component: qostaskscheduler
+        env: prod
+        proj: alert
+        version: v1
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Shanghai
+        image: registry.cn-beijing.aliyuncs.com/prtr/qos_task_scheduler:1.1.140
+        name: ds-alert-qostaskscheduler
+        ports:
+        - containerPort: 5210
+          name: http
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /app/config
+          name: config
+        - mountPath: /app/config/alerters
+          name: config-alerters
+        - mountPath: /app/config/tasks
+          name: config-tasks
+        - mountPath: /app/config/workers
+          name: config-workers
+        - mountPath: /app/var
+          name: data-var
+        - mountPath: /app/cache
+          name: data-cache
+      imagePullSecrets:
+      - name: aliyun-yht-private
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      volumes:
+      - configMap:
+          name: qostaskscheduler-config
+        name: config
+      - configMap:
+          name: qostaskscheduler-config-alerters
+        name: config-alerters
+      - configMap:
+          name: qostaskscheduler-config-tasks
+        name: config-tasks
+      - configMap:
+          name: qostaskscheduler-config-workers
+        name: config-workers
+      - emptyDir: null
+        name: data-var
+        persistentVolumeClaim:
+          claimName: qostaskscheduler-var
+      - emptyDir: null
+        name: data-cache
+        persistentVolumeClaim:
+          claimName: qostaskscheduler-cache
