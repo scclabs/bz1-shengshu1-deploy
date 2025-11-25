@@ -23,10 +23,10 @@ spec:
           key: node-role.kubernetes.io/control-plane
           operator: Exists
       nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+        node-role.kubernetes.io/control-plane: ""
       containers:
         - name: ds-alert-qostaskscheduler
-          image: registry.cn-beijing.aliyuncs.com/prtr/qos_task_scheduler:1.1.137
+          image: registry.cn-beijing.aliyuncs.com/prtr/qos_task_scheduler:1.1.140
           ports:
             - containerPort: 5210
               name: http

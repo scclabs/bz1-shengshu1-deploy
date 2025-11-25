@@ -30,6 +30,7 @@ configMapGenerator:
 - name: qostaskscheduler-config-tasks
   files:
   - config/tasks/Tsinghua3_bad_gpu_card_report.yml
+  - config/tasks/Tsinghua3_bad_gpu_card_report_1h.yml
 
   - config/tasks/calculate_accounts_mh_usage.yml
   - config/tasks/cancel_jobs_by_comment.yml

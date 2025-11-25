@@ -1,6 +1,6 @@
 Tsinghua3_bad_gpu_card_report:
   prometheus: Tsinghua3_vm
-  cluster: shengshu2
+  cluster: bz1-shengshu1
   user: 清华3号
   available_node_threshold: 298
   focus_node_list: []

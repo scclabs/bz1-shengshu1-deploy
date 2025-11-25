@@ -1,10 +1,2 @@
-schedules: 
-- name:  清华3号5090集群故障卡统计
-  enable: true
-  tasks:
-    - url: http://localhost:5210/v1/task/Tsinghua3_bad_gpu_card_report
-      params:
-        recievers : [ Tsinghua3_4090_5090_resource_maintenance_IDS_Alert ]
-  schedules:
-    day      : ["08:00"]
-  err_reporter: qos_test_sion
+schedules: []
+
