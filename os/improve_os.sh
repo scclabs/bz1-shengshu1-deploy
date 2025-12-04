@@ -18,7 +18,7 @@ pdsh -w "${nodes}" rm /etc/apt/apt.conf.d/80proxy
 # install pdsh and other tools
 # pdsh -w "${nodes}" rm /etc/apt/apt.conf.d/80proxy
 pdsh -w "${nodes}" apt update
-pdsh -w "${nodes}" 'apt install -y pdsh net-tools cpufrequtils socat build-essential linux-headers-$(uname -r) gcc make tuned'
+pdsh -w "${nodes}" 'apt install -y pdsh net-tools cpufrequtils socat build-essential linux-headers-$(uname -r) gcc make'
 
 # disable linux kernel auto upgrade
 # pdsh -w "${nodes}" mkdir -p /etc/apt/preferences.d
@@ -28,8 +28,8 @@ pdsh -w "${nodes}" /tmp/noupgrade.sh
 
 
 # enable cpu performance mode
-pdsh -w "${nodes}" systemctl enable tuned --now
-pdsh -w "${nodes}" tuned-adm profile latency-performance
+# pdsh -w "${nodes}" systemctl enable tuned --now
+# pdsh -w "${nodes}" tuned-adm profile latency-performance
 
 # disable firewall
 pdsh -w "${nodes}" ufw disable
@@ -65,21 +65,21 @@ pdsh -w "${nodes}" 'grep -q "10.196.255.200 lb-apiserver.kubernetes.local" /etc/
 
 pdsh -w "${nodes}" <<- 'EOF'
 mkdir -p /mnt/nvme0n1 
-mkfs.ext4 /dev/nvme0n1
-UUID=$(blkid -s UUID -o value /dev/nvme0n1) && (grep -qs "$UUID" /etc/fstab && echo "/etc/fstab 中已存在 $UUID" || (echo "UUID=$UUID  /mnt/nvme0n1   ext4  defaults  0  2" | sudo tee -a /etc/fstab && mount -a))
+mkfs.ext4 /dev/nvme0n1 
+UUID=$(blkid -s UUID -o value /dev/nvme0n1) && (grep -qs ^UUID="$UUID" /etc/fstab && echo "/etc/fstab 中已存在 $UUID" || (echo "UUID=$UUID  /mnt/nvme0n1   ext4  defaults  0  2" | sudo tee -a /etc/fstab && mount -a))
 EOF
 
 pdsh -w "${nodes}" <<- 'EOF'
 mkdir -p /mnt/nvme0n1/containerd /mnt/nvme0n1/kubelet /var/lib/containerd /var/lib/kubelet
-grep -qs "/mnt/nvme0n1/containerd" /etc/fstab && echo "/etc/fstab 中已存在 /mnt/nvme0n1/containerd" || (echo "/mnt/nvme0n1/containerd /var/lib/containerd none defaults,bind 0 0" | sudo tee -a /etc/fstab && mount -a)
-grep -qs "/mnt/nvme0n1/kubelet" /etc/fstab && echo "/etc/fstab 中已存在 /mnt/nvme0n1/kubelet" || (echo "/mnt/nvme0n1/kubelet /var/lib/kubelet none defaults,bind 0 0" | sudo tee -a /etc/fstab && mount -a)
+grep -qs "^/mnt/nvme0n1/containerd" /etc/fstab && echo "/etc/fstab 中已存在 /mnt/nvme0n1/containerd" || (echo "/mnt/nvme0n1/containerd /var/lib/containerd none defaults,bind 0 0" | sudo tee -a /etc/fstab && mount -a)
+grep -qs "^/mnt/nvme0n1/kubelet" /etc/fstab && echo "/etc/fstab 中已存在 /mnt/nvme0n1/kubelet" || (echo "/mnt/nvme0n1/kubelet /var/lib/kubelet none defaults,bind 0 0" | sudo tee -a /etc/fstab && mount -a)
 EOF
 
 # change dns and netplan
 # pdsh -w "${nodes}" "sed -i '/nameservers:/,/search:/ { /^\s*-\s*[0-9]\{1,3\}\(\.[0-9]\{1,3\}\)\{3\}$/d; /addresses:/s/$/ \n        - 223.5.5.5\n        - 119.29.29.29/ }' /etc/netplan/00-installer-config.yaml"
 
-pdsh -w "${nodes}" tuned-adm active
+# pdsh -w "${nodes}" tuned-adm active
 pdsh -w "${nodes}" 'lscpu | grep "Thread(s) per core"'
 pdsh -w "${nodes}" 'ip link show bond0 | grep mtu'
 pdsh -w "${nodes}" 'cat /etc/netplan/00-installer-config.yaml | grep nameservers -A 5'
-pdsh -w "${nodes}" apt-mark showhold
+# pdsh -w "${nodes}" apt-mark showhold
