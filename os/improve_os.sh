@@ -76,7 +76,7 @@ grep -qs "^/mnt/nvme0n1/kubelet" /etc/fstab && echo "/etc/fstab 中已存在 /mn
 EOF
 
 # change dns and netplan
-# pdsh -w "${nodes}" "sed -i '/nameservers:/,/search:/ { /^\s*-\s*[0-9]\{1,3\}\(\.[0-9]\{1,3\}\)\{3\}$/d; /addresses:/s/$/ \n        - 223.5.5.5\n        - 119.29.29.29/ }' /etc/netplan/00-installer-config.yaml"
+pdsh -w "${nodes}" "sed -i '/nameservers:/,/search:/ { /^\s*-\s*[0-9]\{1,3\}\(\.[0-9]\{1,3\}\)\{3\}$/d; /addresses:/s/$/ \n        - 223.5.5.5\n        - 119.29.29.29/ }' /etc/netplan/00-installer-config.yaml"
 
 # pdsh -w "${nodes}" tuned-adm active
 pdsh -w "${nodes}" 'lscpu | grep "Thread(s) per core"'
