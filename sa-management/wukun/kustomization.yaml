@@ -5,3 +5,5 @@ resources:
   - serviceAccount.yaml
   - secret.yaml
   - cluster.yaml
+  - ns-prod.yaml
+  - ns-gpu-operator.yaml
