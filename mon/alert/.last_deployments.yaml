@@ -713,7 +713,7 @@ spec:
       record: rule:vm-alert-custom-rules-k8s
     - alert: discoverd_custom_alert_no_resolved
       annotations:
-        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        mentioned_list: ou_c66576530f799c96c9832801dea44364
         summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
           <font color="orange">{{ $labels.pod }}</font> | 原因: <font color="red">{{
           $labels.reason }}</font> | 节点: <font color="blue">{{ $labels.node }}</font>'
@@ -722,13 +722,13 @@ spec:
         kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       for: 0m
       labels:
-        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        mentioned_list: ou_c66576530f799c96c9832801dea44364
         rename: disable
         retitle: bz1-shenshu1 - pod 异常退出
         severity: critical
     - alert: discoverd_custom_alert
       annotations:
-        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        mentioned_list: ou_c66576530f799c96c9832801dea44364
         summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
           <font color="orange">{{ $labels.pod }}</font> | 状态: <font color="red">{{
           $labels.phase }}</font> | 节点: <font color="blue">{{ $labels.node }}</font>'
@@ -772,7 +772,7 @@ spec:
         severity: critical
     - alert: discoverd_custom_alert
       annotations:
-        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        mentioned_list: ou_c66576530f799c96c9832801dea44364
         summary: '命名空间: <font color="purple">{{ $labels.namespace }}</font> | pod:
           <font color="orange">{{ $labels.pod }}</font> | 容器: <font color="blue">{{
           $labels.container }}</font> | 节点: <font color="blue">{{ $labels.node }}</font>'
@@ -780,7 +780,7 @@ spec:
         + on(namespace,pod) group_left(node) (kube_pod_info * 0) unless on(node) kube_node_labels{label_node_role_kubernetes_io_maintenance="true"}
       for: 0s
       labels:
-        mentioned_list: ou_d34db1f50f8702161371353e55ac7802
+        mentioned_list: ou_c66576530f799c96c9832801dea44364
         rename: disable
         retitle: bz1-shenshu1 - pod 长时间 Terminating
         severity: critical

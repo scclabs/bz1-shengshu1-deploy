@@ -36,10 +36,12 @@ spec:
         severity: critical
         retitle : bz1-shenshu1 - pod 异常退出
         rename  : disable
-        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        mentioned_list: "ou_c66576530f799c96c9832801dea44364"  # 武坤
       annotations:
         summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 原因: <font color=\"red\">{{ $labels.reason }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
-        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        mentioned_list: "ou_c66576530f799c96c9832801dea44364"  # 武坤
 
     # 报警：pod 状态异常
     - alert: discoverd_custom_alert
@@ -55,7 +57,8 @@ spec:
         # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
       annotations:
         summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 状态: <font color=\"red\">{{ $labels.phase }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
-        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        mentioned_list: "ou_c66576530f799c96c9832801dea44364"  # 武坤
 
     # 报警：pod container 状态异常
     - alert: discoverd_custom_alert
@@ -99,7 +102,9 @@ spec:
         severity: critical
         retitle : bz1-shenshu1 - pod 长时间 Terminating
         rename  : disable
-        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        mentioned_list: "ou_c66576530f799c96c9832801dea44364"  # 武坤
       annotations:
         summary: "命名空间: <font color=\"purple\">{{ $labels.namespace }}</font> | pod: <font color=\"orange\">{{ $labels.pod }}</font> | 容器: <font color=\"blue\">{{ $labels.container }}</font> | 节点: <font color=\"blue\">{{ $labels.node }}</font>"
-        mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        # mentioned_list: "ou_d34db1f50f8702161371353e55ac7802"  # 曾琢
+        mentioned_list: "ou_c66576530f799c96c9832801dea44364"  # 武坤
