@@ -62,6 +62,7 @@ spec:
       expr: >-
         ((DCGM_FI_DEV_XID_ERRORS == 32 or
           DCGM_FI_DEV_XID_ERRORS == 38 or
+          DCGM_FI_DEV_XID_ERRORS == 45 or
           DCGM_FI_DEV_XID_ERRORS == 48 or
           DCGM_FI_DEV_XID_ERRORS == 61 or
           DCGM_FI_DEV_XID_ERRORS == 62 or

@@ -512,13 +512,13 @@ spec:
         summary: '**节点**: {{ $labels.Hostname }} | **gpu**: {{ $labels.gpu }} | **pci_bus_id**:
           {{ $labels.pci_bus_id }} | **Code**: {{ $value }}'
       expr: ( re:DCGM_FI_DEV_XID_ERRORS == 32 or re:DCGM_FI_DEV_XID_ERRORS == 38 or
-        re:DCGM_FI_DEV_XID_ERRORS == 48 or re:DCGM_FI_DEV_XID_ERRORS == 61 or re:DCGM_FI_DEV_XID_ERRORS
-        == 62 or re:DCGM_FI_DEV_XID_ERRORS == 63 or re:DCGM_FI_DEV_XID_ERRORS == 64
-        or re:DCGM_FI_DEV_XID_ERRORS == 68 or re:DCGM_FI_DEV_XID_ERRORS == 74 or re:DCGM_FI_DEV_XID_ERRORS
-        == 79 or re:DCGM_FI_DEV_XID_ERRORS == 92 or re:DCGM_FI_DEV_XID_ERRORS == 94
-        or re:DCGM_FI_DEV_XID_ERRORS == 95 or re:DCGM_FI_DEV_XID_ERRORS == 119 or
-        re:DCGM_FI_DEV_XID_ERRORS == 120 or re:DCGM_FI_DEV_XID_ERRORS == 154 ) unless
-        on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"},
+        re:DCGM_FI_DEV_XID_ERRORS == 45 or re:DCGM_FI_DEV_XID_ERRORS == 48 or re:DCGM_FI_DEV_XID_ERRORS
+        == 61 or re:DCGM_FI_DEV_XID_ERRORS == 62 or re:DCGM_FI_DEV_XID_ERRORS == 63
+        or re:DCGM_FI_DEV_XID_ERRORS == 64 or re:DCGM_FI_DEV_XID_ERRORS == 68 or re:DCGM_FI_DEV_XID_ERRORS
+        == 74 or re:DCGM_FI_DEV_XID_ERRORS == 79 or re:DCGM_FI_DEV_XID_ERRORS == 92
+        or re:DCGM_FI_DEV_XID_ERRORS == 94 or re:DCGM_FI_DEV_XID_ERRORS == 95 or re:DCGM_FI_DEV_XID_ERRORS
+        == 119 or re:DCGM_FI_DEV_XID_ERRORS == 120 or re:DCGM_FI_DEV_XID_ERRORS ==
+        154 ) unless on(Hostname) label_replace(kube_node_labels{label_node_role_kubernetes_io_maintenance="true"},
         "Hostname", "$1", "node", "(.*)")
       for: 0s
       labels:
@@ -599,6 +599,7 @@ spec:
         ((DCGM_FI_DEV_XID_ERRORS == 32 or
 
           DCGM_FI_DEV_XID_ERRORS == 38 or
+          DCGM_FI_DEV_XID_ERRORS == 45 or
           DCGM_FI_DEV_XID_ERRORS == 48 or
           DCGM_FI_DEV_XID_ERRORS == 61 or
           DCGM_FI_DEV_XID_ERRORS == 62 or
