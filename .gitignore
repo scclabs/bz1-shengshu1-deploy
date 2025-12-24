@@ -36,3 +36,5 @@ mon/loki/charts/kubernetes-event-exporter
 coredns/tmp
 
 maintenance/
+
+os/gn
