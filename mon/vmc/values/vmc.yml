@@ -111,7 +111,7 @@ vmcluster:
           cpu: 4
           memory: 32Gi
         limits:
-          # cpu: 32
+          cpu: 32
           memory: 100Gi
 
     vmselect:
@@ -128,8 +128,8 @@ vmcluster:
       replicaCount: 3
       resources:
         limits:
-          cpu: 8
-          memory: 16Gi
+          cpu: 16
+          memory: 32Gi
       storage:
         volumeClaimTemplate:
           spec:
@@ -146,8 +146,8 @@ vmcluster:
       replicaCount: 3
       resources:
         limits:
-          cpu: 8
-          memory: 8Gi
+          cpu: 16
+          memory: 16Gi
 
   ingress:
     select:
